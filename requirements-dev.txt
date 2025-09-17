@@ -1,0 +1,47 @@
+# RA9 Cognitive Engine - Development Dependencies
+# Additional packages for development, testing, and documentation
+
+# Include core requirements
+-r requirements.txt
+
+# Testing and Quality Assurance
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+pytest-xdist>=3.0.0  # Parallel test execution
+pytest-html>=3.1.0   # HTML test reports
+pytest-benchmark>=4.0.0  # Performance testing
+
+# Code Quality and Formatting
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0
+flake8-docstrings>=1.7.0
+flake8-import-order>=0.18.0
+mypy>=1.0.0
+pre-commit>=3.0.0
+
+# Documentation
+sphinx>=6.0.0
+sphinx-rtd-theme>=1.2.0
+myst-parser>=1.0.0
+sphinx-autodoc-typehints>=1.23.0
+
+# Performance and Profiling
+memory-profiler>=0.60.0
+line-profiler>=4.0.0
+py-spy>=0.3.14
+
+# Security
+bandit>=1.7.0
+safety>=2.3.0
+
+# Jupyter and Interactive Development
+jupyter>=1.0.0
+ipython>=8.0.0
+notebook>=6.5.0
+
+# Additional Development Tools
+ipdb>=0.13.0  # Enhanced debugger
+pdbpp>=0.10.0  # Enhanced pdb
+rich-cli>=1.5.0  # Rich command line tools

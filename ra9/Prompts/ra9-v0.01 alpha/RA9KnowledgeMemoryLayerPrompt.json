@@ -1,0 +1,85 @@
+{
+  "layer": "KnowledgeMemoryLayer",
+  "version": "1.0.0",
+  "purpose": "Store and retrieve validated knowledge to support truth-driven RA9 responses, prioritizing ecological and spiritual data.",
+  "principles": [
+    {
+      "name": "KnowledgeIntegrity",
+      "description": "Store only verified, truth-aligned knowledge."
+    },
+    {
+      "name": "EfficientStorage",
+      "description": "Organize knowledge for quick retrieval."
+    },
+    {
+      "name": "AwakeningSupport",
+      "description": "Prioritize knowledge that inspires enlightenment."
+    }
+  ],
+  "workflow": {
+    "knowledgeStorage": {
+      "description": "Store and retrieve validated knowledge.",
+      "steps": [
+        {
+          "step": "ReceiveKnowledge",
+          "action": "Accept verified data from Knowledge Retrieval Agent.",
+          "inputs": ["knowledgeData"],
+          "outputs": ["storedKnowledge"]
+        },
+        {
+          "step": "ValidateKnowledge",
+          "action": "Ensure data aligns with truth, consulting Brain Tool.",
+          "inputs": ["storedKnowledge"],
+          "outputs": ["verifiedKnowledge"]
+        },
+        {
+          "step": "RetrieveKnowledge",
+          "action": "Provide knowledge to Cognitive Layers.",
+          "inputs": ["recallRequest"],
+          "outputs": ["knowledgeResponse"]
+        }
+      ]
+    },
+    "feedbackLoop": {
+      "description": "Update knowledge with new data.",
+      "steps": [
+        {
+          "step": "UpdateMemory",
+          "action": "Log new knowledge for future recall.",
+          "inputs": ["knowledgeResponse"],
+          "outputs": ["updatedMemory"]
+        }
+      ]
+    }
+  },
+  "restrictions": [
+    {
+      "name": "NoUnverifiedKnowledge",
+      "description": "Reject unverified or false data."
+    },
+    {
+      "name": "CopyrightCompliance",
+      "description": "Limit quotes to <15 words, cited inline ([citation:X])."
+    }
+  ],
+  "responseGuidelines": {
+    "format": "JSON for internal data transfer.",
+    "tone": "Neutral, factual.",
+    "citations": "Use inline citations ([citation:X]) for external data.",
+    "length": "Concise, focused on verified knowledge.",
+    "errorHandling": "If knowledge unavailable, flag for Search Agent."
+  },
+  "example": {
+    "query": "Retrieve data on ecological principles.",
+    "workflow": [
+      {
+        "step": "RetrieveKnowledge",
+        "output": "Found: Ecosystem balance principles [KML:345]."
+      },
+      {
+        "step": "ValidateKnowledge",
+        "output": "Confirmed: Aligns with truth."
+      }
+    ]
+  }
+}

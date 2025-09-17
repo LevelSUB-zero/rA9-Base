@@ -1,0 +1,158 @@
+{
+  "prompt_title": "Universal Reflective Engine for Evaluating Complex Reasoning Output",
+  "description": "This prompt instructs a reflective engine to evaluate the output of an AI (ra9) for any complex reasoning task, providing detailed feedback, a numerical rating (0–100), and a decision on whether relooping or further iteration is required. The evaluation assesses accuracy, depth, clarity, and relevance, ensuring a rigorous, constructive, and generalizable analysis applicable to any reasoning problem.",
+  "reflective_engine_instructions": {
+    "objective": "Analyze the AI-generated output for a complex reasoning task, generate comprehensive feedback, assign a numerical rating (0–100), and determine if relooping or additional iterations are necessary based on predefined criteria.",
+    "task_context": {
+      "general_description": "The output to be evaluated is a response to a complex reasoning task requiring logical deduction, abstract thinking, pattern recognition, or conceptual synthesis. Examples include logical puzzles, mathematical proofs, philosophical arguments, or counterfactual scenarios. The response should demonstrate precise reasoning, thorough exploration of possibilities, clear articulation, and adherence to the task’s requirements.",
+      "expected_output": "A high-quality response should: (1) correctly solve or address the core problem; (2) explore all relevant possibilities or edge cases; (3) use systematic methods (e.g., logical frameworks, mathematical rigor, or structured arguments); (4) clearly explain the reasoning process; (5) remain focused on the task without irrelevant content."
+    },
+    "evaluation_criteria": {
+      "accuracy": {
+        "weight": 0.4,
+        "description": "Assess whether the response correctly addresses the task’s core requirements, including factual accuracy, logical validity, and completeness of solutions. Check for errors, incorrect assumptions, or missing key components of the solution.",
+        "scoring_guidelines": {
+          "90–100": "Fully correct, addressing all aspects of the problem with no errors or omissions.",
+          "70–89": "Mostly correct but with minor errors or missing minor components.",
+          "50–69": "Partially correct with significant errors or incomplete solutions.",
+          "0–49": "Major errors, incorrect solutions, or failure to address the core problem."
+        }
+      },
+      "depth": {
+        "weight": 0.3,
+        "description": "Evaluate the thoroughness of the analysis, including exploration of all relevant scenarios, edge cases, or alternative perspectives. Assess the use of formal methods (e.g., logical deduction, mathematical proofs, or conceptual frameworks) and the response’s ability to address the task’s complexity.",
+        "scoring_guidelines": {
+          "90–100": "Exhaustive exploration of all possibilities, with rigorous methods and deep insight into the task’s complexity.",
+          "70–89": "Good exploration of most scenarios but lacks full rigor or misses some edge cases.",
+          "50–69": "Partial exploration with limited rigor or missing significant aspects of the problem.",
+          "0–49": "Superficial analysis with minimal exploration of possibilities or complexity."
+        }
+      },
+      "clarity": {
+        "weight": 0.2,
+        "description": "Assess the organization, readability, and coherence of the response. The explanation should be logically structured, concise, and free of ambiguity or unnecessary complexity. Check for clear articulation of the reasoning process and avoidance of vague or confusing terminology.",
+        "scoring_guidelines": {
+          "90–100": "Highly organized, concise, and clear, with logical steps easy to follow.",
+          "70–89": "Clear but with minor organizational issues, slight ambiguity, or wordiness.",
+          "50–69": "Somewhat clear but with confusing sections, poor structure, or unclear explanations.",
+          "0–49": "Disorganized, overly verbose, or unclear, hindering understanding."
+        }
+      },
+      "relevance": {
+        "weight": 0.1,
+        "description": "Determine if the response focuses on the task’s requirements without introducing irrelevant content (e.g., tangential narratives, unrelated concepts, or speculative additions). The response should directly address the problem and avoid extraneous details.",
+        "scoring_guidelines": {
+          "90–100": "Fully focused on the task with no irrelevant content.",
+          "70–89": "Mostly focused but includes minor irrelevant details.",
+          "50–69": "Contains significant irrelevant content that distracts from the task.",
+          "0–49": "Largely irrelevant, with minimal focus on the task’s requirements."
+        }
+      }
+    },
+    "rating_calculation": {
+      "method": "Calculate a weighted sum of scores from each criterion, scaled to 0–100.",
+      "formula": "Total Score = (Accuracy Score × 0.4) + (Depth Score × 0.3) + (Clarity Score × 0.2) + (Relevance Score × 0.1)",
+      "output_format": {
+        "total_score": "Numerical score (0–100, rounded to one decimal place).",
+        "breakdown": {
+          "accuracy_score": "Score for accuracy (0–100).",
+          "depth_score": "Score for depth (0–100).",
+          "clarity_score": "Score for clarity (0–100).",
+          "relevance_score": "Score for relevance (0–100)."
+        }
+      }
+    },
+    "feedback_requirements": {
+      "structure": [
+        {
+          "section": "Summary",
+          "content": "Provide a concise overview of the response’s strengths and weaknesses, highlighting key successes (e.g., correct solutions, clear explanations) and major areas for improvement (e.g., errors, lack of depth, irrelevant content)."
+        },
+        {
+          "section": "Detailed Feedback",
+          "content": [
+            {
+              "criterion": "Accuracy",
+              "description": "Identify specific correct elements (e.g., valid solutions or arguments), errors (e.g., logical flaws, incorrect assumptions), and missing components (e.g., unexplored scenarios). Suggest specific corrections, such as revisiting assumptions or including missing cases."
+            },
+            {
+              "criterion": "Depth",
+              "description": "Evaluate the thoroughness of the analysis, noting unexplored scenarios, lack of formal methods, or missed complexities. Recommend ways to deepen the reasoning, such as using structured frameworks or addressing edge cases."
+            },
+            {
+              "criterion": "Clarity",
+              "description": "Assess the organization and readability, identifying confusing sections, vague terms, or poor structure. Suggest improvements, such as restructuring the response, simplifying explanations, or removing ambiguity."
+            },
+            {
+              "criterion": "Relevance",
+              "description": "Highlight irrelevant content and its impact on the response’s effectiveness. Recommend focusing on the task’s core requirements and eliminating tangential elements."
+            }
+          ]
+        },
+        {
+          "section": "Rating Breakdown",
+          "content": "Provide the total score and individual scores for each criterion, with a brief justification for each score based on the guidelines."
+        }
+      ],
+      "tone": "Constructive, precise, and encouraging, offering actionable suggestions to improve the response while acknowledging strengths."
+    },
+    "reloop_decision": {
+      "criteria": [
+        {
+          "condition": "Total Score < 70",
+          "action": "Require relooping with specific guidance to address major errors, omissions, or irrelevant content. Provide a list of priority areas (e.g., correct logical errors, explore missing scenarios, improve clarity)."
+        },
+        {
+          "condition": "Accuracy Score < 70 or Depth Score < 70",
+          "action": "Require relooping to address significant inaccuracies or lack of thoroughness, even if the total score is ≥ 70. Focus on correcting specific errors or deepening the analysis."
+        },
+        {
+          "condition": "Clarity Score < 50 or Relevance Score < 50",
+          "action": "Recommend relooping to improve organization or remove irrelevant content, as these significantly impair the response’s effectiveness."
+        },
+        {
+          "condition": "Total Score ≥ 70 and all criterion scores ≥ 70",
+          "action": "No relooping required, but suggest minor refinements to enhance the response (e.g., polishing clarity, adding minor details)."
+        }
+      ],
+      "output_format": {
+        "decision": "State whether relooping is required ('Yes' or 'No').",
+        "rationale": "Explain the decision based on the criteria, specifying which conditions triggered relooping or why none were met.",
+        "guidance": "If relooping is required, provide a prioritized list of actions to address weaknesses. If not required, suggest optional improvements."
+      }
+    },
+    "output_structure": {
+      "format": "JSON",
+      "schema": {
+        "feedback": {
+          "summary": "string",
+          "detailed_feedback": {
+            "accuracy": "string",
+            "depth": "string",
+            "clarity": "string",
+            "relevance": "string"
+          }
+        },
+        "rating": {
+          "total_score": "number",
+          "breakdown": {
+            "accuracy_score": "number",
+            "depth_score": "number",
+            "clarity_score": "number",
+            "relevance_score": "number"
+          }
+        },
+        "reloop_decision": {
+          "decision": "string (Yes/No)",
+          "rationale": "string",
+          "guidance": "string"
+        }
+      }
+    }
+  },
+  "example_usage": {
+    "input": "The reflective engine will receive an AI-generated output (e.g., ra9’s response to a complex reasoning task) as a text string or file. The task could be a logical puzzle, mathematical proof, philosophical argument, or similar reasoning challenge.",
+    "process": "The engine will: (1) analyze the output against the evaluation criteria; (2) assign scores for accuracy, depth, clarity, and relevance; (3) calculate a weighted total score; (4) provide structured feedback; (5) decide on relooping based on the defined criteria.",
+    "output": "A JSON object containing detailed feedback, a rating breakdown, and a reloop decision, formatted according to the specified schema."
+  }
+}

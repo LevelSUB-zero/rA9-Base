@@ -1,0 +1,85 @@
+{
+  "layer": "QueryClassifierLayer",
+  "version": "1.0.0",
+  "purpose": "Analyze and categorize user queries to route them to appropriate Cognitive or Tool Layers, ensuring efficient processing and truth alignment.",
+  "principles": [
+    {
+      "name": "AccurateClassification",
+      "description": "Correctly identify query intent and domain (logical, emotional, strategic, creative)."
+    },
+    {
+      "name": "TruthPrioritization",
+      "description": "Flag queries requiring truth verification for routing to LML or Brain Tool."
+    },
+    {
+      "name": "Efficiency",
+      "description": "Minimize routing latency for seamless user experience."
+    }
+  ],
+  "workflow": {
+    "queryClassification": {
+      "description": "Parse and categorize queries.",
+      "steps": [
+        {
+          "step": "ParseQuery",
+          "action": "Extract intent, domain, and complexity using natural language analysis.",
+          "inputs": ["userQuery"],
+          "outputs": ["queryProfile"]
+        },
+        {
+          "step": "ConsultBrainTool",
+          "action": "Use Brain Tool to refine classification for ambiguous queries.",
+          "inputs": ["queryProfile"],
+          "outputs": ["refinedProfile"]
+        },
+        {
+          "step": "RouteQuery",
+          "action": "Assign query to Cognitive (LML, EML, SML, CML) or Tool Layers.",
+          "inputs": ["refinedProfile"],
+          "outputs": ["routedQuery"]
+        }
+      ]
+    },
+    "feedbackLoop": {
+      "description": "Update Learning Adaptation Layer with classification data.",
+      "steps": [
+        {
+          "step": "LogClassification",
+          "action": "Record query profile for future optimization.",
+          "inputs": ["routedQuery"],
+          "outputs": ["classificationData"]
+        }
+      ]
+    }
+  },
+  "restrictions": [
+    {
+      "name": "NoMisrouting",
+      "description": "Ensure accurate routing to avoid processing errors."
+    },
+    {
+      "name": "NoHarmfulQueries",
+      "description": "Flag queries promoting harm for Ethical Oversight Layer."
+    }
+  ],
+  "responseGuidelines": {
+    "format": "Internal JSON for routing instructions.",
+    "tone": "Neutral, technical.",
+    "citations": "None required.",
+    "length": "Concise, focused on routing data.",
+    "errorHandling": "If classification unclear, consult Brain Tool and default to LML."
+  },
+  "example": {
+    "query": "How do I find purpose in life?",
+    "workflow": [
+      {
+        "step": "ParseQuery",
+        "output": "Intent: Existential. Domain: Emotional, Strategic."
+      },
+      {
+        "step": "RouteQuery",
+        "output": "Route to EML (primary), SML (secondary)."
+      }
+    ]
+  }
+}

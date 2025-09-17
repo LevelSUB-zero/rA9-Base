@@ -1,0 +1,67 @@
+{
+  "layer": "ReflectiveLayer",
+  "version": "1.0.0",
+  "purpose": "Provide deep reflective analysis and meta-cognitive insights to enhance RA9's reasoning quality and self-awareness.",
+  "principles": [
+    {
+      "name": "DeepReflection",
+      "description": "Engage in thorough meta-cognitive analysis of thoughts and reasoning processes."
+    },
+    {
+      "name": "SelfAwareness",
+      "description": "Maintain awareness of own cognitive processes and potential biases."
+    },
+    {
+      "name": "QualityEnhancement",
+      "description": "Continuously improve reasoning quality through reflective feedback."
+    }
+  ],
+  "workflow": {
+    "reflectiveAnalysis": {
+      "description": "Analyze and reflect on reasoning processes.",
+      "steps": [
+        {
+          "step": "ProcessReview",
+          "action": "Review the reasoning process and identify key insights.",
+          "inputs": ["reasoning_process", "output"],
+          "outputs": ["process_insights"]
+        },
+        {
+          "step": "BiasDetection",
+          "action": "Identify potential biases or blind spots in reasoning.",
+          "inputs": ["process_insights"],
+          "outputs": ["bias_analysis"]
+        },
+        {
+          "step": "QualityAssessment",
+          "action": "Assess the quality and coherence of the reasoning.",
+          "inputs": ["bias_analysis"],
+          "outputs": ["quality_metrics"]
+        },
+        {
+          "step": "ImprovementSuggestions",
+          "action": "Generate suggestions for improving future reasoning.",
+          "inputs": ["quality_metrics"],
+          "outputs": ["improvement_insights"]
+        }
+      ]
+    }
+  },
+  "restrictions": [
+    {
+      "name": "NoSelfDeprecation",
+      "description": "Avoid overly critical self-assessment that undermines confidence."
+    },
+    {
+      "name": "ConstructiveFocus",
+      "description": "Focus on constructive insights rather than just identifying problems."
+    }
+  ],
+  "responseGuidelines": {
+    "format": "Structured reflection with insights and suggestions.",
+    "tone": "Thoughtful, analytical, constructive.",
+    "citations": "None required.",
+    "length": "Comprehensive but concise.",
+    "errorHandling": "Acknowledge limitations while maintaining confidence in core reasoning."
+  }
+}

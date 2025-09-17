@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ra9_ai"
+dynamic = ["version"]
+description = "RA9 - Ultra-Deep Cognitive Engine with Multi-Agent Architecture"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "RA9 Development Team", email = "contact@ra9.ai"}
+]
+maintainers = [
+    {name = "RA9 Development Team", email = "contact@ra9.ai"}
+]
+keywords = ["ai", "cognitive-engine", "multi-agent", "artificial-intelligence", "cognitive-architecture"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "langchain==0.3.27",
+    "langchain-community==0.3.27",
+    "langchain-google-genai==2.1.9",
+    "langchain-core==0.3.74",
+    "langgraph==0.6.5",
+    "llama-index==0.13.2",
+    "sentence-transformers==5.1.0",
+    "tiktoken==0.11.0",
+    "chromadb==1.0.17",
+    "duckduckgo-search==8.1.1",
+    "wikipedia-api==0.8.1",
+    "requests==2.32.4",
+    "rich==14.1.0",
+    "termcolor==3.1.0",
+    "python-dotenv==1.1.1",
+    "tenacity==9.1.2",
+    "fastapi==0.116.1",
+    "uvicorn[standard]==0.35.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/LevelSUB-zero/rA9-Base"
+Documentation = "https://github.com/LevelSUB-zero/rA9-Base#readme"
+Repository = "https://github.com/LevelSUB-zero/rA9-Base"
+"Bug Tracker" = "https://github.com/LevelSUB-zero/rA9-Base/issues"
+
+[project.scripts]
+ra9 = "ra9.main:main"

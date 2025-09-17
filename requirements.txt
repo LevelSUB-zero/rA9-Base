@@ -1,0 +1,46 @@
+# RA9 Cognitive Engine - Core Dependencies
+# Generated for easy pip installation
+
+# Core AI/ML packages with specific versions
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-google-genai==2.1.9
+langchain-core==0.3.74
+langgraph==0.6.5
+
+# LLM and embedding packages
+llama-index==0.13.2
+sentence-transformers==5.1.0
+tiktoken==0.11.0
+
+# Vector database
+chromadb==1.0.17
+
+# Search and web tools
+duckduckgo-search==8.1.1
+wikipedia-api==0.8.1
+requests==2.32.4
+
+# UI and CLI
+rich==14.1.0
+termcolor==3.1.0
+
+# Configuration and utilities
+python-dotenv==1.1.1
+tenacity==9.1.2
+
+# Web framework (optional)
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+
+# Development and testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+
+# Additional utilities
+pyyaml>=6.0
+numpy>=1.24.0
+pandas>=2.0.0

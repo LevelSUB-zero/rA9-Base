@@ -1,0 +1,7 @@
+﻿{
+  "jobId": "cli-job-2",
+  "text": "Plan a 3-step routine to learn linear algebra.",
+  "mode": "concise",
+  "loopDepth": 1,
+  "allowMemoryWrite": false
+}
