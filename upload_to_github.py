@@ -209,7 +209,7 @@ This project is licensed under the MIT License.
 
 **RA9 Development Team** - Building the future of cognitive AI"""
     
-    with open("RELEASE_NOTES.md", "w") as f:
+    with open("RELEASE_NOTES.md", "w", encoding="utf-8") as f:
         f.write(release_notes)
     
     print("✅ Release notes created")
