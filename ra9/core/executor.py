@@ -2,10 +2,10 @@ import json
 import time
 from typing import List, Dict, Tuple, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tools.tool_api import ask_gemini, load_prompt_from_json
-from core.reflective import reflect_response
-from core.framer import frame_output
-from memory.memory_manager import store_memory
+from ra9.tools.tool_api import ask_gemini, load_prompt_from_json
+from ra9.core.reflective import reflect_response
+from ra9.core.framer import frame_output
+from ra9.memory.memory_manager import store_memory
 
 class RA9MultiAgentExecutor:
     """Orchestrates the multi-agent cognitive architecture with recursive loops."""
@@ -403,7 +403,7 @@ Provide a single, unified response that reflects the collaborative intelligence 
     def _check_meta_coherence(self, aggregated_output: str, sub_agent_outputs: List[Dict], ra9_persona: Dict) -> Tuple[bool, str]:
         """Check meta-coherence using the MetaCoherenceAgent."""
         
-        from agents.meta_coherence_agent import meta_coherence_check
+        from ra9.agents.meta_coherence_agent import meta_coherence_check
         
         # Create a summary of the thought process
         thought_history = [
@@ -416,7 +416,7 @@ Provide a single, unified response that reflects the collaborative intelligence 
 def execute_ra9_multi_agent(query: str, ra9_persona: Dict, user_id: str = "", allow_memory_write: bool = True) -> Dict[str, Any]:
     """Main entry point for the multi-agent execution system."""
     
-    from router.query_classifier import classify_query
+    from ra9.router.query_classifier import classify_query
     
     executor = RA9MultiAgentExecutor()
     
@@ -436,11 +436,11 @@ def execute_ra9_multi_agent(query: str, ra9_persona: Dict, user_id: str = "", al
         if result.get("coherence_score"):
             # If coherent and substantial, store semantic summary
             if len(result.get("final_answer", "")) > 300:
-                from memory.memory_manager import store_semantic, store_reflective
+                from ra9.memory.memory_manager import store_semantic, store_reflective
                 store_semantic(result["final_answer"], tags=[primary] + labels)
             else:
                 # If short or flagged, add reflective note
-                from memory.memory_manager import store_reflective
+                from ra9.memory.memory_manager import store_reflective
                 store_reflective(result.get("coherence_feedback", ""), related_query=query)
     
     return result 

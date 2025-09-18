@@ -52,8 +52,12 @@ class CLIWorkflowEngine:
             self.cli.show_workflow_stage("classifying", "Analyzing query intent and complexity...")
             start_time = time.time()
             
-            structured_query = classify_query(text, user_id=user_id)
-            self.performance_metrics["api_calls"] += 1
+            try:
+                structured_query = classify_query(text, user_id=user_id)
+                self.performance_metrics["api_calls"] += 1
+            except Exception as e:
+                self.cli.show_workflow_stage("error", f"Query classification failed: {str(e)}")
+                return {"error": f"Query classification failed: {str(e)}"}
             
             classification_time = time.time() - start_time
             self.cli.show_classification_result(structured_query)
@@ -78,8 +82,21 @@ class CLIWorkflowEngine:
             
             # Execute multi-agent workflow
             start_time = time.time()
-            result = execute_ra9_multi_agent(text, self.persona, user_id=user_id, allow_memory_write=allow_memory_write)
-            agent_time = time.time() - start_time
+            try:
+                result = execute_ra9_multi_agent(text, self.persona, user_id=user_id, allow_memory_write=allow_memory_write)
+                agent_time = time.time() - start_time
+            except Exception as e:
+                self.cli.show_workflow_stage("error", f"Multi-agent execution failed: {str(e)}")
+                return {"error": f"Multi-agent execution failed: {str(e)}"}
+            
+            # Check if result has expected structure
+            if not isinstance(result, dict):
+                self.cli.show_workflow_stage("error", "Multi-agent execution returned invalid result")
+                return {"error": "Multi-agent execution returned invalid result"}
+            
+            if "final_answer" not in result:
+                self.cli.show_workflow_stage("error", "Multi-agent execution did not produce final answer")
+                return {"error": "Multi-agent execution did not produce final answer"}
             
             # Update agent statuses
             if "sub_agent_outputs" in result:

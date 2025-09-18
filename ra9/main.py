@@ -52,6 +52,11 @@ def main():
         # Run the enhanced CLI workflow
         result = run_cli_workflow(job_payload)
         
+        # Check if there was an error in the workflow
+        if "error" in result:
+            print(json.dumps({"kind": "error", "message": result["error"]}), flush=True)
+            sys.exit(1)
+        
         # Emit final result for compatibility
         if "final_answer" in result:
             print(json.dumps({"kind": "token", "agent": "actor", "token": result["final_answer"]}), flush=True)
@@ -60,8 +65,11 @@ def main():
         print(json.dumps({"kind": "done"}), flush=True)
     except KeyboardInterrupt:
         print(json.dumps({"kind": "token", "agent": "system", "token": "RA9 session terminated by user."}), flush=True)
+        sys.exit(1)
     except Exception as e:
-        print(json.dumps({"kind": "token", "agent": "system", "token": f"An unexpected error occurred: {e}"}), flush=True)
+        print(json.dumps({"kind": "error", "message": f"An unexpected error occurred: {e}"}), flush=True)
+        import traceback
+        print(json.dumps({"kind": "error", "message": f"Traceback: {traceback.format_exc()}"}), flush=True)
         sys.exit(1)
 
 if __name__ == "__main__":

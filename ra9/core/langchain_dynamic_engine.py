@@ -3,7 +3,7 @@ from typing import Dict, Any, List
 from core.dynamic_reflection_engine import DynamicReflectionEngine
 from core.langchain_integration import create_langchain_integration
 from core.enhanced_cli_ui import create_enhanced_cli
-from memory.memory_manager import store_memory
+from ra9.memory.memory_manager import store_memory
 
 class RA9LangChainDynamicEngine:
     """Ultra-powerful engine combining our dynamic reflection with LangChain capabilities."""
