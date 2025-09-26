@@ -4,7 +4,26 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
+> **🚀 Latest Version**: Use the **Current** branch for the most up-to-date, stable version with all professional improvements and fixes.
+
 A sophisticated multi-agent cognitive architecture designed for advanced AI reasoning, problem-solving, and decision-making. RA9 combines multiple specialized cognitive agents to provide deep, contextual understanding and intelligent responses.
+
+## 🎯 Quick Start (Current Branch)
+
+```bash
+# Clone and switch to Current branch
+git clone https://github.com/LevelSUB-zero/rA9-Base.git
+cd rA9-Base
+git checkout Current
+
+# Quick install
+python install_current.py
+
+# Or use the full installer
+python install.py --venv
+```
+
+**📖 For detailed instructions, see [CURRENT_BRANCH_README.md](CURRENT_BRANCH_README.md)**
 
 ## 🚀 Features
 
