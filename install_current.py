@@ -32,6 +32,28 @@ def print_warning(message):
     print(f"⚠️  {message}")
 
 
+def run(cmd):
+    """Run a subprocess command, returning CompletedProcess and raising on error."""
+    return subprocess.run(cmd, check=True, capture_output=True, text=True)
+
+
+def install_with_retry(pip_cmd, package_candidates):
+    """Try installing a list of package spec candidates until one succeeds.
+
+    package_candidates: list of strings like ["pydantic>=2.8,<3", "pydantic==2.6.4"]
+    """
+    last_error = None
+    for spec in package_candidates:
+        try:
+            run(pip_cmd + ["install", "--no-cache-dir", "--upgrade", spec])
+            return spec
+        except subprocess.CalledProcessError as e:
+            last_error = e
+            print_warning(f"Failed to install {spec}; trying next candidate...")
+    if last_error:
+        raise last_error
+
+
 def main():
     """Main installation function."""
     print("🚀 RA9 Current Branch - Quick Install")
@@ -41,6 +63,9 @@ def main():
     if sys.version_info < (3, 8):
         print_error("Python 3.8+ required")
         return 1
+
+    if sys.version_info >= (3, 13):
+        print_warning("Detected Python 3.13 – ensuring compatibility pins for Pydantic.")
     
     print_success(f"Python {sys.version_info.major}.{sys.version_info.minor} detected")
     
@@ -58,7 +83,7 @@ def main():
             print_error("Failed to create virtual environment")
             return 1
     
-    # Get pip command
+    # Get pip/python command
     if platform.system().lower() == "windows":
         pip_cmd = [str(venv_path / "Scripts" / "pip.exe")]
         python_cmd = [str(venv_path / "Scripts" / "python.exe")]
@@ -69,32 +94,47 @@ def main():
     # Install dependencies
     print_step("Installing dependencies...")
     try:
-        # Upgrade pip
-        subprocess.run(pip_cmd + ["install", "--upgrade", "pip"], 
-                      check=True, capture_output=True)
+        # Upgrade pip and build tooling first
+        run(pip_cmd + ["install", "--upgrade", "pip", "setuptools", "wheel", "setuptools-scm"])
+
+        # Preinstall core config deps with retries (pydantic + pydantic-settings)
+        print_step("Installing core configuration dependencies (with retries)...")
+        # Prefer newer first, fall back to widely compatible pins
+        pydantic_installed = install_with_retry(
+            pip_cmd,
+            [
+                "pydantic>=2.8,<3",
+                "pydantic==2.7.4",
+                "pydantic==2.6.4",
+            ],
+        )
+        print_success(f"Installed {pydantic_installed}")
+
+        pyd_settings_installed = install_with_retry(
+            pip_cmd,
+            [
+                "pydantic-settings>=2.3,<3",
+                "pydantic-settings==2.2.1",
+            ],
+        )
+        print_success(f"Installed {pyd_settings_installed}")
         
-        # Install core dependencies first
+        # Install remaining core runtime deps
         core_deps = [
-            "pydantic>=2.0.0",
-            "pydantic-settings>=2.0.0",
             "typer>=0.9.0",
             "fastapi>=0.100.0",
             "uvicorn>=0.20.0",
-            "structlog>=23.0.0"
+            "structlog>=23.0.0",
         ]
-        
         for dep in core_deps:
-            subprocess.run(pip_cmd + ["install", dep], 
-                          check=True, capture_output=True)
+            run(pip_cmd + ["install", dep])
         
-        # Install RA9 package
-        subprocess.run(pip_cmd + ["install", "-e", "."], 
-                      check=True, capture_output=True)
-        
+        # Install RA9 package (editable)
+        run(pip_cmd + ["install", "-e", "."])
         print_success("Dependencies installed")
         
     except subprocess.CalledProcessError as e:
-        print_error(f"Failed to install dependencies: {e}")
+        print_error(f"Failed to install dependencies: {e}\nSTDOUT: {e.stdout}\nSTDERR: {e.stderr}")
         return 1
     
     # Create .env file
@@ -121,21 +161,19 @@ RA9_DEBUG=false
     # Verify installation
     print_step("Verifying installation...")
     try:
-        result = subprocess.run(
-            python_cmd + ["-c", "import ra9; print('RA9 imported successfully')"],
-            check=True, capture_output=True, text=True
-        )
+        run(python_cmd + ["-c", "import ra9; print('RA9 imported successfully')"])
         print_success("RA9 package imported successfully")
         
         # Test CLI
-        result = subprocess.run(
-            python_cmd + ["-m", "ra9.cli", "--help"],
-            check=True, capture_output=True, text=True
-        )
-        print_success("CLI is working")
+        try:
+            run(python_cmd + ["-m", "ra9.cli", "--help"])
+            print_success("CLI is working")
+        except subprocess.CalledProcessError:
+            print_warning("CLI help check failed (may be due to missing API keys)")
         
     except subprocess.CalledProcessError as e:
-        print_warning("CLI test failed (normal if API keys not configured)")
+        print_error(f"Verification failed: {e}\nSTDOUT: {e.stdout}\nSTDERR: {e.stderr}")
+        return 1
     
     # Print usage instructions
     print("\n🎉 Installation Complete!")
