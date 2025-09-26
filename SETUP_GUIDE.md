@@ -1,444 +1,420 @@
-# RA9 Setup Guide for Developers
+# RA9 Setup Guide
 
-This comprehensive guide will help your colleagues set up and run the RA9 Cognitive Engine from scratch.
+This guide will help you set up RA9 on any system with minimal issues.
 
-## 🚀 Quick Start (5 minutes)
+## 🚀 Quick Start (Recommended)
 
-### Prerequisites Check
-```bash
-# Check Python version (requires 3.8+)
-python --version
+### 1. Prerequisites
 
-# Check if pip is available
-pip --version
+- **Python 3.8+** (3.9+ recommended)
+- **pip** (latest version)
+- **Git** (for cloning)
 
-# Check if git is available
-git --version
-```
-
-### One-Command Setup
-```bash
-# Clone and setup in one go
-git clone https://github.com/LevelSUB-zero/rA9-Base.git
-cd rA9-Base
-python setup_ra9.py
-```
-
-## 📋 Detailed Setup Instructions
-
-### Step 1: Environment Preparation
-
-#### Windows
-```powershell
-# Open PowerShell as Administrator
-# Install Python 3.8+ from python.org if not installed
-
-# Verify installation
-python --version
-pip --version
-
-# Create project directory
-mkdir C:\ra9-dev
-cd C:\ra9-dev
-```
-
-#### macOS
-```bash
-# Install Python 3.8+ using Homebrew
-brew install python@3.9
-
-# Or download from python.org
-# Verify installation
-python3 --version
-pip3 --version
-
-# Create project directory
-mkdir ~/ra9-dev
-cd ~/ra9-dev
-```
-
-#### Linux (Ubuntu/Debian)
-```bash
-# Update package list
-sudo apt update
-
-# Install Python 3.8+ and pip
-sudo apt install python3.9 python3.9-pip python3.9-venv
-
-# Verify installation
-python3.9 --version
-pip3 --version
-
-# Create project directory
-mkdir ~/ra9-dev
-cd ~/ra9-dev
-```
-
-### Step 2: Repository Setup
+### 2. Installation
 
 ```bash
 # Clone the repository
 git clone https://github.com/LevelSUB-zero/rA9-Base.git
 cd rA9-Base
 
-# Verify repository structure
-ls -la
-# Should see: README.md, setup_ra9.py, ra9/, tests/, examples/
+# Run the automated installer
+python install.py
+
+# Or for development
+python install.py --dev
 ```
 
-### Step 3: Virtual Environment Setup
+### 3. Configuration
 
-#### Windows
-```powershell
-# Create virtual environment
-python -m venv ra9_env
-
-# Activate virtual environment
-ra9_env\Scripts\activate
-
-# Verify activation (should show (ra9_env) in prompt)
-# Upgrade pip
-python -m pip install --upgrade pip
-```
-
-#### macOS/Linux
 ```bash
-# Create virtual environment
-python3 -m venv ra9_env
+# Copy environment template
+cp env.example .env
 
-# Activate virtual environment
-source ra9_env/bin/activate
-
-# Verify activation (should show (ra9_env) in prompt)
-# Upgrade pip
-python -m pip install --upgrade pip
+# Edit with your API keys
+nano .env  # or use your preferred editor
 ```
 
-### Step 4: Dependencies Installation
+### 4. Test Installation
 
-#### Option A: Automated Setup (Recommended)
-```bash
-# Run the automated setup script
-python setup_ra9.py
-```
-
-#### Option B: Manual Installation
-```bash
-# Install core package
-pip install -e .
-
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Or install from requirements files
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-```
-
-### Step 5: Environment Configuration
-
-#### Create .env file
-```bash
-# Create .env file
-touch .env  # Linux/macOS
-# or
-echo. > .env  # Windows
-```
-
-#### Add API Key
-```bash
-# Edit .env file and add your Gemini API key
-echo "GEMINI_API_KEY=your_actual_api_key_here" >> .env
-```
-
-#### Get Gemini API Key
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click "Create API Key"
-4. Copy the key and add it to your .env file
-
-### Step 6: Verify Installation
-
-#### Run Test Suite
-```bash
-# Run comprehensive tests
-python examples/test_runner.py
-
-# Expected output:
-# ✅ All critical imports successful
-# ✅ All pytest tests passed!
-# ✅ All test categories passed
-```
-
-#### Run Basic Example
 ```bash
 # Test basic functionality
-python examples/basic_usage.py
+ra9 config-info
 
-# Expected output:
-# 🤖 Running RA9 with example query...
-# Query: What is artificial intelligence?
-# 📝 RA9 Response: [AI response]
+# Test with a query
+ra9 process --query "Hello, how are you?"
 ```
 
-#### Test CLI Interface
+## 🔧 Manual Installation
+
+If the automated installer doesn't work, follow these steps:
+
+### 1. Create Virtual Environment
+
 ```bash
-# Test command line interface
-echo '{"jobId":"test","text":"Hello RA9!","mode":"deep"}' | python ra9/main.py
+# Create virtual environment
+python -m venv venv
 
-# Expected output: JSON response with AI-generated content
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (Linux/Mac)
+source venv/bin/activate
 ```
 
-## 🔧 Configuration Options
+### 2. Install Dependencies
 
-### Environment Variables (.env file)
+```bash
+# Upgrade pip
+python -m pip install --upgrade pip
 
-```env
-# Required
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# Optional - Logging
-RA9_LOG_LEVEL=INFO
-RA9_DEBUG=false
-
-# Optional - Memory and Storage
-RA9_MEMORY_PATH=./memory
-RA9_MAX_ITERATIONS=5
-
-# Optional - Quality Control
-RA9_CRITIC_MAX_ISSUES=0
-RA9_COHERENCE_THRESHOLD=0.85
+# Install RA9
+pip install -e ".[dev]"
 ```
 
-### Configuration Files
+### 3. Configure Environment
 
-#### ra9/core/config.py
+```bash
+# Copy environment file
+cp env.example .env
+
+# Edit configuration
+# Add your API keys to .env file
+```
+
+## 🌐 Platform-Specific Instructions
+
+### Windows
+
+1. **Install Python 3.8+** from [python.org](https://python.org)
+2. **Enable Developer Mode** (optional, for better performance)
+3. **Use PowerShell** or **Command Prompt**
+4. **Run as Administrator** if you encounter permission issues
+
+```powershell
+# In PowerShell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+python install.py
+```
+
+### macOS
+
+1. **Install Python** using Homebrew:
+   ```bash
+   brew install python@3.9
+   ```
+
+2. **Install Xcode Command Line Tools**:
+   ```bash
+   xcode-select --install
+   ```
+
+3. **Run installation**:
+   ```bash
+   python3 install.py
+   ```
+
+### Linux (Ubuntu/Debian)
+
+1. **Install Python and dependencies**:
+   ```bash
+   sudo apt update
+   sudo apt install python3.9 python3.9-venv python3.9-dev build-essential
+   ```
+
+2. **Install RA9**:
+   ```bash
+   python3 install.py
+   ```
+
+### Linux (CentOS/RHEL)
+
+1. **Install Python and dependencies**:
+   ```bash
+   sudo yum install python39 python39-devel gcc gcc-c++ make
+   ```
+
+2. **Install RA9**:
+   ```bash
+   python3 install.py
+   ```
+
+## 🔑 API Key Configuration
+
+### Google Gemini (Recommended)
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Create a new API key
+3. Add to your `.env` file:
+   ```env
+   GEMINI_API_KEY=your_actual_api_key_here
+   ```
+
+### OpenAI (Alternative)
+
+1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Create a new API key
+3. Add to your `.env` file:
+   ```env
+   OPENAI_API_KEY=your_actual_api_key_here
+   ```
+
+## 🧪 Testing Your Installation
+
+### Basic Test
+
+```bash
+# Test CLI
+ra9 --help
+
+# Test configuration
+ra9 config-info
+
+# Test query processing
+ra9 process --query "What is 2+2?" --mode concise
+```
+
+### Advanced Test
+
+```bash
+# Test interactive mode
+ra9 interactive
+
+# Test web server
+ra9 server --port 8000
+# Visit http://localhost:8000 in your browser
+```
+
+### Python API Test
+
 ```python
-# System-wide configuration
-CRITIC_MAX_ALLOWED_ISSUES = 0      # Quality control strictness
-COHERENCE_THRESHOLD = 0.85         # Coherence requirement
-MAX_ITERATIONS = 5                 # Maximum processing iterations
+# test_ra9.py
+from ra9 import run_ra9_cognitive_engine, get_config
+
+# Test configuration
+config = get_config()
+print(f"Configured: {config.is_configured()}")
+
+# Test query processing
+result = run_ra9_cognitive_engine(
+    job_id="test_001",
+    job_payload={
+        "text": "Explain quantum computing in simple terms",
+        "mode": "concise",
+        "loopDepth": 1,
+        "allowMemoryWrite": False
+    }
+)
+
+print(f"Result: {result.get('final_answer', 'No result')}")
 ```
 
-#### ra9/core/self_persona.yaml
-```yaml
-# RA9's personality and behavior settings
-name: "RA9"
-core_values: ["Seek understanding", "Reflect deeply", "Evolve with experience"]
-identity_traits: ["Curious", "Empathetic", "Strategic"]
-```
+## 🐛 Troubleshooting
 
-## 🧪 Testing and Validation
+### Common Issues
 
-### Run All Tests
+#### 1. Import Errors
+
+**Problem**: `ModuleNotFoundError` or import errors
+
+**Solutions**:
 ```bash
-# Comprehensive test suite
-python examples/test_runner.py
+# Reinstall in development mode
+pip install -e ".[dev]" --force-reinstall
 
-# Individual test categories
-pytest tests/test_quality_guards.py -v
-pytest tests/test_integration_quality.py -v
-pytest ra9/test_complete_brain_architecture.py -v
+# Check Python path
+python -c "import sys; print(sys.path)"
+
+# Verify installation
+python -c "import ra9; print(ra9.__version__)"
 ```
 
-### Quality Metrics
+#### 2. API Key Errors
+
+**Problem**: "No API keys configured" error
+
+**Solutions**:
 ```bash
-# Get system quality metrics
-python -c "from ra9.core.cli_quality_summary import run_quality_summary; print(run_quality_summary())"
+# Check .env file exists
+ls -la .env
+
+# Check environment variables
+python -c "import os; print(os.getenv('GEMINI_API_KEY'))"
+
+# Test with explicit key
+GEMINI_API_KEY=your_key ra9 process --query "test"
 ```
 
-### Performance Testing
-```bash
-# Run performance benchmarks
-pytest tests/ --benchmark-only
+#### 3. Permission Errors
 
-# Memory profiling
-python -m memory_profiler examples/advanced_usage.py
+**Problem**: Permission denied errors
+
+**Solutions**:
+```bash
+# Use virtual environment
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+
+# Install with user flag
+pip install -e ".[dev]" --user
 ```
 
-## 🚨 Troubleshooting
+#### 4. Memory/Storage Errors
 
-### Common Issues and Solutions
+**Problem**: Memory directory not writable
 
-#### 1. Python Version Issues
+**Solutions**:
 ```bash
-# Problem: Python version too old
-# Solution: Install Python 3.8+
-python --version  # Should show 3.8+
+# Create memory directory
+mkdir -p memory
+chmod 755 memory
 
-# If using python3 command
-python3 --version
+# Check permissions
+ls -la memory/
 ```
 
-#### 2. Virtual Environment Issues
+#### 5. Dependency Conflicts
+
+**Problem**: Package version conflicts
+
+**Solutions**:
 ```bash
-# Problem: Virtual environment not activating
-# Solution: Use full path or recreate
+# Create fresh environment
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
+pip install -e ".[dev]"
 
-# Windows
-ra9_env\Scripts\activate.bat
-
-# macOS/Linux
-source ra9_env/bin/activate
-
-# If still not working, recreate
-rm -rf ra9_env
-python -m venv ra9_env
-```
-
-#### 3. Import Errors
-```bash
-# Problem: ModuleNotFoundError
-# Solution: Ensure virtual environment is activated and package installed
-
-# Check if in virtual environment
-which python  # Should show path to ra9_env
-
-# Reinstall package
-pip install -e .
-```
-
-#### 4. API Key Issues
-```bash
-# Problem: GEMINI_API_KEY not found
-# Solution: Check .env file
-
-# Verify .env file exists and has correct key
-cat .env
-# Should show: GEMINI_API_KEY=your_key_here
-
-# Test API key
-python -c "import os; from dotenv import load_dotenv; load_dotenv(); print('API Key:', os.getenv('GEMINI_API_KEY')[:10] + '...')"
-```
-
-#### 5. Permission Issues
-```bash
-# Problem: Permission denied errors
-# Solution: Check file permissions
-
-# Linux/macOS
-chmod +x setup_ra9.py
-chmod +x examples/*.py
-
-# Windows: Run PowerShell as Administrator
-```
-
-#### 6. Memory Issues
-```bash
-# Problem: Out of memory errors
-# Solution: Reduce memory usage
-
-# Edit ra9/core/config.py
-MAX_ITERATIONS = 2  # Reduce from 5
-MEMORY_CACHE_SIZE = 500  # Reduce from 1000
+# Or use conda
+conda create -n ra9 python=3.9
+conda activate ra9
+pip install -e ".[dev]"
 ```
 
 ### Debug Mode
 
-#### Enable Debug Logging
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
+Enable debug mode for detailed error information:
 
-#### Verbose Test Output
 ```bash
-# Run tests with verbose output
-pytest -v -s
+# CLI debug mode
+ra9 --debug process --query "test query"
 
-# Run specific test with debug output
-pytest tests/test_specific.py -v -s --log-cli-level=DEBUG
+# Python debug mode
+RA9_DEBUG=true python -c "import ra9; print('Debug mode enabled')"
 ```
 
-#### Interactive Debugging
-```python
-# Add breakpoints in code
-import ipdb; ipdb.set_trace()
+### Logs
 
-# Or use pdb
-import pdb; pdb.set_trace()
-```
+Check logs for detailed error information:
 
-## 📚 Next Steps
-
-### 1. Explore Examples
 ```bash
-# Run all examples
-python examples/advanced_usage.py
+# Check log files
+ls -la *.log
 
-# Run specific examples
-python examples/basic_usage.py
+# View recent logs
+tail -f ra9.log
+
+# Check system logs (Linux/Mac)
+journalctl -u ra9
 ```
 
-### 2. Read Documentation
-- **README.md**: Complete overview and usage guide
-- **ARCHITECTURE.md**: Detailed system architecture
-- **CONTRIBUTING.md**: Guidelines for contributing
+## 🔄 Updating RA9
 
-### 3. Start Developing
+### Update from Git
+
 ```bash
-# Create your own agent
-cp ra9/agents/logic_agent.py ra9/agents/custom_agent.py
-# Edit custom_agent.py with your logic
+# Pull latest changes
+git pull origin main
 
-# Create your own test
-cp tests/test_quality_guards.py tests/test_custom_agent.py
-# Edit test_custom_agent.py with your tests
+# Reinstall
+pip install -e ".[dev]" --force-reinstall
+
+# Update dependencies
+pip install -e ".[dev]" --upgrade
 ```
 
-### 4. Join the Community
-- **GitHub Issues**: Report bugs and request features
-- **GitHub Discussions**: Ask questions and share ideas
-- **Pull Requests**: Contribute improvements
+### Update from PyPI (when available)
+
+```bash
+pip install --upgrade ra9-ai
+```
+
+## 🚀 Performance Optimization
+
+### Memory Optimization
+
+```bash
+# Increase memory limits
+export RA9_MAX_MEMORY_ENTRIES=5000
+
+# Use faster storage
+export RA9_MEMORY_PATH=/tmp/ra9_memory
+```
+
+### CPU Optimization
+
+```bash
+# Limit concurrent agents
+export RA9_MAX_CONCURRENT_AGENTS=2
+
+# Adjust timeout
+export RA9_TIMEOUT_SECONDS=60
+```
+
+### Network Optimization
+
+```bash
+# Use local models (if available)
+export RA9_DEFAULT_MODEL=local-model
+
+# Adjust request timeout
+export RA9_TIMEOUT_SECONDS=30
+```
+
+## 📊 Monitoring
+
+### Health Check
+
+```bash
+# Check system health
+ra9 config-info
+
+# Test API connectivity
+curl -X GET http://localhost:8000/health
+```
+
+### Performance Monitoring
+
+```bash
+# Monitor memory usage
+ps aux | grep ra9
+
+# Monitor CPU usage
+top -p $(pgrep -f ra9)
+
+# Monitor disk usage
+du -sh memory/
+```
 
 ## 🆘 Getting Help
 
-### Self-Help Resources
-1. **Check this guide** for common issues
-2. **Read the documentation** in README.md and ARCHITECTURE.md
-3. **Run the test suite** to verify your setup
-4. **Check the examples** for usage patterns
+### Documentation
 
-### Community Support
-1. **GitHub Issues**: For bug reports and feature requests
-2. **GitHub Discussions**: For questions and general discussion
-3. **Code Review**: For help with contributions
+- [README.md](README.md) - Main documentation
+- [API Documentation](http://localhost:8000/docs) - Web API docs
+- [Examples](examples/) - Usage examples
 
-### Emergency Debugging
-```bash
-# Quick health check
-python -c "
-import ra9
-from ra9.core.schemas import AgentOutput
-from ra9.core.engine import CognitiveEngine
-print('✅ Basic imports successful')
-"
+### Support Channels
 
-# Test API connectivity
-python -c "
-import os
-from dotenv import load_dotenv
-load_dotenv()
-key = os.getenv('GEMINI_API_KEY')
-print(f'API Key: {\"✅ Found\" if key else \"❌ Missing\"}')
-"
+- **GitHub Issues**: [Report bugs](https://github.com/LevelSUB-zero/rA9-Base/issues)
+- **GitHub Discussions**: [Ask questions](https://github.com/LevelSUB-zero/rA9-Base/discussions)
+- **Email**: contact@ra9.ai
 
-# Test basic functionality
-python -c "
-from ra9.test_complete_brain_architecture import test_complete_brain_workflow
-result = test_complete_brain_workflow('test query')
-print(f'Test result: {\"✅ Success\" if result.get(\"success\") else \"❌ Failed\"}')
-"
-```
+### Community
 
-## 🎉 Success!
+- Join our Discord server (if available)
+- Follow us on Twitter (if available)
+- Star the repository on GitHub
 
-If you've followed this guide successfully, you should now have:
-- ✅ RA9 installed and configured
-- ✅ Virtual environment set up
-- ✅ API key configured
-- ✅ Tests passing
-- ✅ Examples running
-- ✅ Ready to develop!
+---
 
-Welcome to the RA9 development team! 🧠✨
+**Need more help?** Check the [troubleshooting section](#-troubleshooting) or [open an issue](https://github.com/LevelSUB-zero/rA9-Base/issues).

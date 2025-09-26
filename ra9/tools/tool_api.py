@@ -3,8 +3,29 @@ from dotenv import load_dotenv
 import json
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
+from typing import Dict, Any, Optional
 
 load_dotenv()
+
+
+class ToolAPI:
+    """API wrapper for various tools and services."""
+    
+    def __init__(self):
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+    
+    def ask_gemini(self, prompt: str) -> str:
+        """Call Gemini API with retry logic."""
+        return ask_gemini(prompt)
+    
+    def load_prompt(self, file_path: str) -> str:
+        """Load prompt from JSON file."""
+        return load_prompt_from_json(file_path)
+    
+    def is_configured(self) -> bool:
+        """Check if API keys are configured."""
+        return bool(self.gemini_api_key or self.openai_api_key)
 
 def load_prompt_from_json(file_path):
     try:

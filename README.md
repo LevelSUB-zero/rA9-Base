@@ -2,333 +2,247 @@
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](https://github.com/LevelSUB-zero/rA9-Base)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## 🧠 What is RA9?
+A sophisticated multi-agent cognitive architecture designed for advanced AI reasoning, problem-solving, and decision-making. RA9 combines multiple specialized cognitive agents to provide deep, contextual understanding and intelligent responses.
 
-RA9 is an advanced multi-agent cognitive architecture inspired by brain-like processing. It implements a sophisticated system of specialized agents (Logical, Emotional, Creative, Strategic) that work together through a global workspace, with quality gates, self-critique mechanisms, and meta-coherence validation.
+## 🚀 Features
 
-### Key Features
+- **Multi-Agent Architecture**: Specialized agents for logic, emotion, creativity, strategy, and meta-cognition
+- **Advanced Memory System**: Episodic, semantic, and reflective memory capabilities
+- **Intelligent Query Routing**: Automatic classification and routing to appropriate agents
+- **Flexible Interfaces**: CLI, web API, and interactive modes
+- **Robust Configuration**: Environment-based configuration with validation
+- **Professional Structure**: Industry-standard packaging and development practices
 
-- **Multi-Agent Architecture**: Specialized cognitive agents with distinct roles
-- **Quality Assurance**: Built-in critique system with automatic rewrite capabilities
-- **Global Workspace**: Centralized information sharing and conflict resolution
-- **Memory Integration**: Persistent episodic and semantic memory systems
-- **Neuromodulation**: Dynamic attention and exploration control
-- **Comprehensive Testing**: Automated quality guards and integration tests
+## 🏗️ Architecture
 
-## 🚀 Quick Start
+RA9 consists of several specialized cognitive agents:
 
-### Prerequisites
+- **Logic Agent**: Logical reasoning and analytical thinking
+- **Emotion Agent**: Emotional intelligence and empathy
+- **Creative Agent**: Creative thinking and ideation
+- **Strategic Agent**: Strategic planning and decision-making
+- **Meta-Coherence Agent**: Meta-cognitive reflection and coherence
+- **Feedback Agent**: Continuous improvement and learning
 
-- Python 3.8 or higher
-- Google Gemini API key (for LLM functionality)
-- Git (for cloning the repository)
+## 📦 Installation
 
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/LevelSUB-zero/rA9-Base.git
-   cd rA9-Base
-   ```
-
-2. **Create a virtual environment:**
-   ```bash
-   python -m venv ra9_env
-   
-   # On Windows:
-   ra9_env\Scripts\activate
-   
-   # On macOS/Linux:
-   source ra9_env/bin/activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -e .
-   ```
-
-4. **Set up environment variables:**
-   ```bash
-   # Create .env file
-   echo "GEMINI_API_KEY=your_gemini_api_key_here" > .env
-   ```
-
-5. **Run the setup script:**
-   ```bash
-   python setup_ra9.py
-   ```
-
-### Basic Usage
-
-#### Command Line Interface
+### Quick Install
 
 ```bash
-# Simple query
-echo '{"jobId":"test-1","text":"What is artificial intelligence?","mode":"deep"}' | python ra9/main.py
+# Clone the repository
+git clone https://github.com/LevelSUB-zero/rA9-Base.git
+cd rA9-Base
 
-# Complex query with specific parameters
-echo '{"jobId":"complex-1","text":"Design a sustainable city for 2050","mode":"hybrid","loopDepth":3,"allowMemoryWrite":true}' | python ra9/main.py
+# Run the installation script
+python install.py
+
+# Or for development
+python install.py --dev
 ```
 
-#### Python API
+### Manual Install
+
+```bash
+# Install in development mode
+pip install -e ".[dev]"
+
+# Or install with specific dependencies
+pip install -e ".[docs,test]"
+```
+
+### Virtual Environment (Recommended)
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (Linux/Mac)
+source venv/bin/activate
+
+# Install RA9
+pip install -e ".[dev]"
+```
+
+## ⚙️ Configuration
+
+1. **Copy the environment template:**
+   ```bash
+   cp env.example .env
+   ```
+
+2. **Edit `.env` and add your API keys:**
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   # OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+3. **Configure additional settings (optional):**
+   ```env
+   RA9_DEFAULT_MODEL=gemini-pro
+   RA9_MAX_TOKENS=2048
+   RA9_TEMPERATURE=0.7
+   RA9_MEMORY_ENABLED=true
+   RA9_LOG_LEVEL=INFO
+   ```
+
+## 🚀 Usage
+
+### Command Line Interface
+
+```bash
+# Process a single query
+ra9 process --query "What is the meaning of life?" --mode creative
+
+# Interactive mode
+ra9 interactive
+
+# Start web server
+ra9 server --port 8000
+
+# Show configuration
+ra9 config-info
+```
+
+### Python API
 
 ```python
-from ra9.core.cli_workflow_engine import run_cli_workflow
+from ra9 import run_ra9_cognitive_engine, get_config
 
-# Define your query
-query = {
-    "jobId": "api-test",
-    "text": "Explain quantum computing in simple terms",
-    "mode": "deep",
-    "loopDepth": 2,
-    "allowMemoryWrite": False
-}
+# Configure
+config = get_config()
 
-# Run the workflow
-result = run_cli_workflow(query)
+# Process query
+result = run_ra9_cognitive_engine(
+    job_id="test_001",
+    job_payload={
+        "text": "Explain quantum computing",
+        "mode": "detailed",
+        "loopDepth": 3,
+        "allowMemoryWrite": True
+    }
+)
+
 print(result["final_answer"])
 ```
 
-## 🏗️ Architecture Overview
+### Web API
 
-### Core Components
-
-```
-RA9 Cognitive Architecture
-├── Core Engine (ra9/core/)
-│   ├── engine.py              # Main cognitive orchestrator
-│   ├── schemas.py             # Data structures and types
-│   ├── gating_manager.py      # Quality gates and quarantine
-│   ├── agent_critique.py      # Self-critique system
-│   ├── meta_coherence_engine.py # Conflict resolution
-│   ├── neuromodulation_controller.py # Attention control
-│   └── memory_manager.py      # Persistent memory
-├── Agents (ra9/agents/)
-│   ├── logic_agent.py         # Logical reasoning
-│   ├── emotion_agent.py       # Emotional processing
-│   ├── creative_agent.py      # Creative generation
-│   ├── strategy_agent.py      # Strategic planning
-│   └── meta_coherence_agent.py # Meta-cognitive oversight
-├── Tools (ra9/tools/)
-│   ├── search_agent.py        # Web search capabilities
-│   └── tool_api.py           # Tool integration
-└── Memory (ra9/memory/)
-    └── memory_manager.py      # Episodic and semantic memory
+Start the server:
+```bash
+ra9 server
 ```
 
-### Cognitive Flow
-
-1. **Input Processing**: Query classification and complexity analysis
-2. **Agent Dispatch**: Route to appropriate specialized agents
-3. **Local Processing**: Each agent generates responses with confidence scores
-4. **Quality Gates**: Self-critique and validation before broadcast
-5. **Global Workspace**: Centralized information sharing and conflict resolution
-6. **Meta-Coherence**: Cross-agent validation and conflict resolution
-7. **Memory Integration**: Store results in episodic and semantic memory
-8. **Output Generation**: Synthesize final response
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-# Required
-GEMINI_API_KEY=your_google_gemini_api_key_here
-
-# Optional
-RA9_LOG_LEVEL=INFO
-RA9_MEMORY_PATH=./memory
-RA9_MAX_ITERATIONS=5
+Then make requests:
+```bash
+curl -X POST "http://localhost:8000/query" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "What is artificial intelligence?",
+    "mode": "concise",
+    "loop_depth": 1
+  }'
 ```
 
-### Configuration Files
+## 🧪 Development
 
-- `ra9/core/config.py`: System-wide configuration parameters
-- `ra9/core/self_persona.yaml`: RA9's personality and behavior settings
-
-### Quality Control Settings
-
-```python
-# In ra9/core/config.py
-CRITIC_MAX_ALLOWED_ISSUES = 0      # Strict quality control
-COHERENCE_THRESHOLD = 0.85         # High coherence requirement
-```
-
-## 🧪 Testing
-
-### Run All Tests
+### Setup Development Environment
 
 ```bash
-# Install test dependencies
+# Install development dependencies
 pip install -e ".[dev]"
 
-# Run all tests
+# Install pre-commit hooks
+pre-commit install
+
+# Run tests
 pytest
 
-# Run with coverage
-pytest --cov=ra9
-
-# Run specific test categories
-pytest tests/test_quality_guards.py
-pytest tests/test_integration_quality.py
+# Run linting
+black ra9/
+isort ra9/
+flake8 ra9/
+mypy ra9/
 ```
 
-### Test Categories
+### Project Structure
 
-- **Quality Guards**: Confidence consistency, gating behavior
-- **Integration Tests**: End-to-end workflow validation
-- **Agent Tests**: Individual agent functionality
-- **Memory Tests**: Persistent storage validation
-
-## 📊 Quality Metrics
-
-RA9 includes comprehensive quality monitoring:
-
-```python
-from ra9.core.cli_quality_summary import run_quality_summary
-
-# Get quality metrics
-metrics = run_quality_summary()
-print(f"Broadcast Count: {metrics['broadcast_count']}")
-print(f"Quarantine Count: {metrics['quarantine_count']}")
-print(f"Coherence Score: {metrics['coherence']}")
-print(f"Critique Pass Rate: {metrics['critique_pass_rate']}")
+```
+ra9/
+├── agents/           # Cognitive agents
+├── core/            # Core engine and configuration
+├── memory/          # Memory management
+├── router/          # Query classification and routing
+├── tools/           # Tools and utilities
+├── cli.py           # Command line interface
+├── server.py        # Web server
+└── main.py          # Legacy entry point
 ```
 
-## 🔍 Debugging and Monitoring
+### Adding New Agents
 
-### Enable Debug Logging
+1. Create a new agent class inheriting from `BaseAgent`:
+   ```python
+   from ra9.agents.base_agent import BaseAgent, AgentResult
+   
+   class MyAgent(BaseAgent):
+       def __init__(self):
+           super().__init__("MyAgent", "Description of my agent")
+       
+       def process_query(self, query: str, context: Dict[str, Any]) -> AgentResult:
+           # Implement your agent logic
+           return AgentResult(
+               answer="My response",
+               quality_score=8.5,
+               confidence=0.9
+           )
+   ```
 
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
+2. Register the agent in the routing system
+3. Add tests for your agent
 
-### Access Quarantine Items
+## 📊 Performance
 
-```python
-from ra9.test_complete_brain_architecture import test_complete_brain_workflow
+RA9 is designed for high performance with:
 
-result = test_complete_brain_workflow("test query")
-quarantine = result.get("quarantine", [])
-for item in quarantine:
-    print(f"Quarantined: {item['reason']}")
-```
+- **Concurrent Processing**: Multiple agents can work in parallel
+- **Memory Optimization**: Efficient memory storage and retrieval
+- **Caching**: Intelligent caching of responses and computations
+- **Streaming**: Real-time response streaming for better UX
 
-### Trace Analysis
-
-```python
-# Get detailed iteration trace
-result = test_complete_brain_workflow("complex query")
-trace = result.get("iteration_trace", [])
-
-for iteration in trace:
-    print(f"Iteration {iteration['iteration']}:")
-    print(f"  Agents: {len(iteration.get('agentOutputs', []))}")
-    print(f"  Critiques: {len(iteration.get('criticReports', []))}")
-    print(f"  Coherence: {iteration.get('coherence', {}).get('coherence_score', 'N/A')}")
-```
-
-## 🚨 Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues
 
-1. **API Key Not Found**
-   ```
-   Error: GEMINI_API_KEY not set
-   Solution: Add your API key to .env file
-   ```
+1. **Import Errors**: Make sure you're in the correct directory and have installed the package
+2. **API Key Errors**: Verify your API keys are set in the `.env` file
+3. **Memory Issues**: Check that the memory directory is writable
+4. **Dependency Issues**: Try reinstalling with `pip install -e ".[dev]" --force-reinstall`
 
-2. **Import Errors**
-   ```
-   Error: ModuleNotFoundError
-   Solution: Ensure virtual environment is activated and dependencies installed
-   ```
+### Debug Mode
 
-3. **Memory Permission Issues**
-   ```
-   Error: Permission denied writing to memory/
-   Solution: Check file permissions or change RA9_MEMORY_PATH
-   ```
-
-4. **Quality Gate Failures**
-   ```
-   Issue: All items quarantined
-   Solution: Check CRITIC_MAX_ALLOWED_ISSUES setting or improve agent prompts
-   ```
-
-### Performance Optimization
-
-- **Memory Management**: Regularly clean up old memory files
-- **Batch Processing**: Use appropriate `loopDepth` for query complexity
-- **Resource Monitoring**: Monitor CPU and memory usage during processing
-
-## 📚 Advanced Usage
-
-### Custom Agent Development
-
-```python
-from ra9.agents.logic_agent import LogicAgent
-from ra9.core.schemas import AgentOutput, AgentType
-
-class CustomAgent(LogicAgent):
-    def process_query(self, query, persona):
-        # Your custom logic here
-        return AgentOutput(
-            agent=AgentType.LOGICAL,
-            text_draft="Custom response",
-            reasoning_trace=["Step 1", "Step 2"],
-            confidence=0.8,
-            confidence_rationale="Based on custom analysis"
-        )
+Enable debug mode for detailed logging:
+```bash
+ra9 --debug process --query "test query"
 ```
 
-### Memory Integration
+### Logs
 
-```python
-from ra9.memory.memory_manager import store_memory, retrieve_memory
-
-# Store important information
-store_memory("user_preference", "Prefers detailed explanations", "user123")
-
-# Retrieve context
-context = retrieve_memory("user123")
-```
-
-### Custom Quality Gates
-
-```python
-from ra9.core.gating_manager import GateEngine, GatingPolicy
-
-class CustomGatingPolicy(GatingPolicy):
-    def should_gate(self, candidate, context):
-        # Your custom gating logic
-        return candidate.confidence > 0.7
-```
+Check logs in the configured log file or console output for detailed error information.
 
 ## 🤝 Contributing
 
-### Development Setup
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Install development dependencies: `pip install -e ".[dev]"`
-4. Make your changes
-5. Run tests: `pytest`
-6. Commit changes: `git commit -m "Add amazing feature"`
-7. Push to branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
-
-### Code Style
-
-- Follow PEP 8 guidelines
-- Use type hints where appropriate
-- Add docstrings for all public functions
-- Write tests for new features
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## 📄 License
 
@@ -336,16 +250,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by Global Workspace Theory and cognitive architectures
-- Built with LangChain and modern AI frameworks
-- Community contributions and feedback
+- LangChain for the AI framework
+- FastAPI for the web interface
+- Pydantic for data validation
+- Rich for beautiful CLI output
 
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/LevelSUB-zero/rA9-Base/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/LevelSUB-zero/rA9-Base/discussions)
-- **Documentation**: [Project Wiki](https://github.com/LevelSUB-zero/rA9-Base/wiki)
+- **Email**: contact@ra9.ai
 
 ---
 
-**RA9 Development Team** - Building the future of cognitive AI
+**RA9** - *Where Intelligence Meets Imagination*

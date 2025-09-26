@@ -1,237 +1,191 @@
 #!/usr/bin/env python3
 """
-RA9 Advanced Usage Examples
-Demonstrates various features and capabilities of the RA9 Cognitive Engine
+Advanced usage example for RA9.
+
+This example demonstrates advanced features like memory, multiple iterations,
+and custom configuration.
 """
 
+import os
+import sys
 import json
-import time
-from typing import Dict, Any
-from ra9.core.cli_workflow_engine import run_cli_workflow
-from ra9.core.cli_quality_summary import run_quality_summary
-from ra9.test_complete_brain_architecture import test_complete_brain_workflow
+from pathlib import Path
 
-def example_basic_query():
-    """Basic query processing example"""
-    print("🤖 Example 1: Basic Query Processing")
+# Add the package root to the path
+package_root = Path(__file__).parent.parent
+sys.path.insert(0, str(package_root))
+
+from ra9 import run_ra9_cognitive_engine, get_config, get_logger
+from ra9.core.config import Config
+
+
+def demonstrate_memory_system():
+    """Demonstrate memory system usage."""
+    print("🧠 Memory System Demo")
     print("=" * 50)
     
-    query = {
-        "jobId": "basic-1",
-        "text": "What are the key principles of sustainable development?",
-        "mode": "deep",
-        "loopDepth": 2,
-        "allowMemoryWrite": False
-    }
-    
-    print(f"Query: {query['text']}")
-    print("Processing...")
-    
-    result = run_cli_workflow(query)
-    
-    if "final_answer" in result:
-        print(f"\n📝 Response: {result['final_answer']}")
-    else:
-        print("\n⚠️  No response generated")
-    
-    return result
-
-def example_complex_analysis():
-    """Complex multi-step analysis example"""
-    print("\n🧠 Example 2: Complex Multi-Agent Analysis")
-    print("=" * 50)
-    
-    query = {
-        "jobId": "complex-1",
-        "text": "Analyze the potential impact of quantum computing on cybersecurity, considering both opportunities and threats. Provide a strategic roadmap for organizations.",
-        "mode": "hybrid",
-        "loopDepth": 3,
-        "allowMemoryWrite": True
-    }
-    
-    print(f"Query: {query['text']}")
-    print("Processing with multiple agents...")
-    
-    result = run_cli_workflow(query)
-    
-    if "final_answer" in result:
-        print(f"\n📝 Comprehensive Analysis: {result['final_answer']}")
-    
-    # Show processing details
-    if "iteration_trace" in result:
-        trace = result["iteration_trace"]
-        print(f"\n📊 Processing Details:")
-        print(f"  - Iterations: {len(trace)}")
-        for i, iteration in enumerate(trace):
-            agents = len(iteration.get('agentOutputs', []))
-            critiques = len(iteration.get('criticReports', []))
-            coherence = iteration.get('coherence', {}).get('coherence_score', 'N/A')
-            print(f"  - Iteration {i+1}: {agents} agents, {critiques} critiques, coherence: {coherence}")
-    
-    return result
-
-def example_quality_monitoring():
-    """Quality monitoring and metrics example"""
-    print("\n📊 Example 3: Quality Monitoring")
-    print("=" * 50)
-    
-    # Run a test query
-    query = {
-        "jobId": "quality-test",
-        "text": "Explain the concept of artificial general intelligence",
-        "mode": "deep",
-        "loopDepth": 2,
-        "allowMemoryWrite": False
-    }
-    
-    print("Running quality test...")
-    result = run_cli_workflow(query)
-    
-    # Get quality metrics
-    print("\n📈 Quality Metrics:")
-    try:
-        metrics = run_quality_summary()
-        print(f"  - Broadcast Count: {metrics.get('broadcast_count', 'N/A')}")
-        print(f"  - Quarantine Count: {metrics.get('quarantine_count', 'N/A')}")
-        print(f"  - Coherence Score: {metrics.get('coherence', 'N/A')}")
-        print(f"  - Critique Pass Rate: {metrics.get('critique_pass_rate', 'N/A')}")
-    except Exception as e:
-        print(f"  ⚠️  Could not retrieve metrics: {e}")
-    
-    return result
-
-def example_memory_integration():
-    """Memory integration and context example"""
-    print("\n🧠 Example 4: Memory Integration")
-    print("=" * 50)
-    
-    # First query - establish context
-    query1 = {
-        "jobId": "memory-1",
-        "text": "I'm working on a machine learning project for image recognition. What are the key considerations?",
-        "mode": "deep",
-        "loopDepth": 2,
-        "allowMemoryWrite": True
-    }
-    
-    print("First query (establishing context):")
-    print(f"Query: {query1['text']}")
-    result1 = run_cli_workflow(query1)
-    
-    if "final_answer" in result1:
-        print(f"Response: {result1['final_answer'][:200]}...")
-    
-    # Second query - should use context from first
-    query2 = {
-        "jobId": "memory-2",
-        "text": "What specific algorithms would you recommend for my project?",
-        "mode": "deep",
-        "loopDepth": 2,
-        "allowMemoryWrite": True
-    }
-    
-    print("\nSecond query (using context):")
-    print(f"Query: {query2['text']}")
-    result2 = run_cli_workflow(query2)
-    
-    if "final_answer" in result2:
-        print(f"Response: {result2['final_answer'][:200]}...")
-    
-    return result1, result2
-
-def example_error_handling():
-    """Error handling and edge cases example"""
-    print("\n⚠️  Example 5: Error Handling")
-    print("=" * 50)
-    
-    # Test with invalid input
-    try:
-        invalid_query = {
-            "jobId": "error-test",
-            "text": "",  # Empty query
-            "mode": "deep",
+    # First query - will be stored in memory
+    print("📝 First query (will be stored in memory):")
+    result1 = run_ra9_cognitive_engine(
+        job_id="memory_demo_1",
+        job_payload={
+            "text": "My name is Alice and I love astronomy",
+            "mode": "concise",
             "loopDepth": 1,
-            "allowMemoryWrite": False
+            "allowMemoryWrite": True,
+            "userId": "alice"
         }
-        
-        print("Testing empty query...")
-        result = run_cli_workflow(invalid_query)
-        print(f"Result: {result}")
-        
-    except Exception as e:
-        print(f"Expected error handled: {e}")
+    )
+    print(f"Response: {result1.get('final_answer', 'No response')}")
+    print()
     
-    # Test with very complex query
-    try:
-        complex_query = {
-            "jobId": "complex-test",
-            "text": "Design a comprehensive framework for ethical AI governance that addresses bias, transparency, accountability, and human rights while considering technical feasibility, economic impact, regulatory compliance, international cooperation, and long-term societal implications. Include specific implementation strategies, risk mitigation approaches, and success metrics.",
-            "mode": "hybrid",
-            "loopDepth": 4,
-            "allowMemoryWrite": True
+    # Second query - should reference previous memory
+    print("📝 Second query (should reference previous memory):")
+    result2 = run_ra9_cognitive_engine(
+        job_id="memory_demo_2", 
+        job_payload={
+            "text": "What do you know about me?",
+            "mode": "concise",
+            "loopDepth": 1,
+            "allowMemoryWrite": True,
+            "userId": "alice"
         }
-        
-        print("\nTesting very complex query...")
-        start_time = time.time()
-        result = run_cli_workflow(complex_query)
-        end_time = time.time()
-        
-        print(f"Processing time: {end_time - start_time:.2f} seconds")
-        if "final_answer" in result:
-            print(f"Response length: {len(result['final_answer'])} characters")
-        
-    except Exception as e:
-        print(f"Complex query error: {e}")
+    )
+    print(f"Response: {result2.get('final_answer', 'No response')}")
+    print()
 
-def example_custom_configuration():
-    """Custom configuration and tuning example"""
-    print("\n⚙️  Example 6: Custom Configuration")
+
+def demonstrate_multiple_iterations():
+    """Demonstrate multiple iteration processing."""
+    print("🔄 Multiple Iterations Demo")
     print("=" * 50)
     
-    # This would demonstrate how to modify configuration
-    # For now, we'll show the concept
-    print("Custom configuration example:")
-    print("1. Modify ra9/core/config.py for system-wide settings")
-    print("2. Use environment variables for runtime configuration")
-    print("3. Adjust agent-specific parameters")
-    print("4. Tune quality gates and thresholds")
+    result = run_ra9_cognitive_engine(
+        job_id="iterations_demo",
+        job_payload={
+            "text": "Design a sustainable city for 1 million people",
+            "mode": "detailed",
+            "loopDepth": 3,  # Multiple iterations
+            "allowMemoryWrite": False,
+            "userId": "planner"
+        }
+    )
     
-    # Example of accessing current configuration
-    try:
-        from ra9.core.config import CRITIC_MAX_ALLOWED_ISSUES, COHERENCE_THRESHOLD
-        print(f"\nCurrent configuration:")
-        print(f"  - Critic Max Issues: {CRITIC_MAX_ALLOWED_ISSUES}")
-        print(f"  - Coherence Threshold: {COHERENCE_THRESHOLD}")
-    except ImportError:
-        print("Configuration module not available")
+    print(f"Final Response: {result.get('final_answer', 'No response')}")
+    print(f"Iterations: {result.get('iterations', 0)}")
+    print(f"Quality Score: {result.get('quality_score', 0)}")
+    print()
 
-def run_all_examples():
-    """Run all examples in sequence"""
-    print("🚀 RA9 Advanced Usage Examples")
-    print("=" * 60)
-    print("This script demonstrates various RA9 capabilities")
-    print("=" * 60)
+
+def demonstrate_different_modes():
+    """Demonstrate different processing modes."""
+    print("🎭 Different Modes Demo")
+    print("=" * 50)
+    
+    query = "What is the future of artificial intelligence?"
+    modes = ["concise", "detailed", "creative", "analytical"]
+    
+    for mode in modes:
+        print(f"📝 Mode: {mode}")
+        result = run_ra9_cognitive_engine(
+            job_id=f"mode_demo_{mode}",
+            job_payload={
+                "text": query,
+                "mode": mode,
+                "loopDepth": 1,
+                "allowMemoryWrite": False,
+                "userId": "mode_tester"
+            }
+        )
+        
+        response = result.get('final_answer', 'No response')
+        print(f"Response: {response[:100]}...")
+        print()
+
+
+def demonstrate_custom_configuration():
+    """Demonstrate custom configuration."""
+    print("⚙️ Custom Configuration Demo")
+    print("=" * 50)
+    
+    # Create custom configuration
+    custom_config = Config(
+        max_iterations=2,
+        default_mode="creative",
+        memory_enabled=True,
+        enable_reflection=True,
+        log_level="DEBUG"
+    )
+    
+    print(f"Custom config: {custom_config.get_agent_config()}")
+    
+    # Use custom configuration (would need to be set globally)
+    # For this example, we'll just show the configuration
+    print("Custom configuration created successfully!")
+    print()
+
+
+def demonstrate_error_handling():
+    """Demonstrate error handling."""
+    print("🚨 Error Handling Demo")
+    print("=" * 50)
+    
+    # Test with empty query
+    print("📝 Testing empty query:")
+    result = run_ra9_cognitive_engine(
+        job_id="error_demo_1",
+        job_payload={
+            "text": "",
+            "mode": "concise",
+            "loopDepth": 1,
+            "allowMemoryWrite": False,
+            "userId": "error_tester"
+        }
+    )
+    
+    if "error" in result:
+        print(f"✅ Error caught: {result['error']}")
+    else:
+        print("❌ Error not caught")
+    
+    print()
+
+
+def main():
+    """Advanced usage example."""
+    
+    # Setup logging
+    logger = get_logger("ra9.advanced_example")
+    
+    # Get configuration
+    config = get_config()
+    
+    # Check if API keys are configured
+    if not config.is_configured():
+        print("❌ No API keys configured!")
+        print("Please set GEMINI_API_KEY or OPENAI_API_KEY environment variable.")
+        return 1
+    
+    print("✅ RA9 is configured and ready for advanced examples!")
+    print(f"📊 Current configuration: {config.get_agent_config()}")
+    print()
     
     try:
-        # Run examples
-        example_basic_query()
-        example_complex_analysis()
-        example_quality_monitoring()
-        example_memory_integration()
-        example_error_handling()
-        example_custom_configuration()
+        # Run demonstrations
+        demonstrate_memory_system()
+        demonstrate_multiple_iterations()
+        demonstrate_different_modes()
+        demonstrate_custom_configuration()
+        demonstrate_error_handling()
         
-        print("\n✅ All examples completed successfully!")
-        print("\nFor more information, see:")
-        print("- README.md: Complete setup and usage guide")
-        print("- ARCHITECTURE.md: Detailed system architecture")
-        print("- tests/: Comprehensive test suites")
+        print("🎉 Advanced examples completed successfully!")
+        return 0
         
-    except KeyboardInterrupt:
-        print("\n\n❌ Examples interrupted by user")
     except Exception as e:
-        print(f"\n\n❌ Error running examples: {e}")
-        print("Check your setup and configuration")
+        logger.error(f"Error in advanced examples: {e}")
+        print(f"❌ Error: {e}")
+        return 1
+
 
 if __name__ == "__main__":
-    run_all_examples()
+    sys.exit(main())

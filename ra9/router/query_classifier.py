@@ -23,6 +23,18 @@ class StructuredQuery:
     label_confidences: Dict[str, float] = field(default_factory=dict)
     reasoning_depth: str = "auto"
 
+
+class QueryClassifier:
+    """Query classification system for RA9."""
+    
+    def __init__(self):
+        self.classification_types = ["Emotional", "Logical", "Strategic", "Creative", "Factual", "Reflective"]
+    
+    def classify(self, text: str, memory_context: str = "", user_id: str = "") -> StructuredQuery:
+        """Classify a query and return structured information."""
+        return classify_query(text, memory_context, user_id)
+
+
 def classify_query(text: str, memory_context: str = "", user_id: str = "") -> StructuredQuery:
     # Expand classification types to include Factual and Reflective
     classification_types = ["Emotional", "Logical", "Strategic", "Creative", "Factual", "Reflective"]

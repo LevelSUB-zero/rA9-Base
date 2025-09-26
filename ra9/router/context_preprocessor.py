@@ -4,6 +4,17 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 
+class ContextPreprocessor:
+    """Context preprocessing for RA9 queries."""
+    
+    def __init__(self):
+        self.memory_path = "memory"
+    
+    def preprocess(self, user_id: Optional[str], text: str) -> Dict[str, Any]:
+        """Preprocess context for a query."""
+        return preprocess_context(user_id, text)
+
+
 def _read_json_file(path: str) -> Any:
     try:
         if os.path.exists(path):

@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=68.0", "wheel", "setuptools-scm[toml]>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ra9_ai"
+name = "ra9-ai"
 dynamic = ["version"]
 description = "RA9 - Ultra-Deep Cognitive Engine with Multi-Agent Architecture"
 readme = "README.md"
@@ -16,7 +16,7 @@ maintainers = [
 ]
 keywords = ["ai", "cognitive-engine", "multi-agent", "artificial-intelligence", "cognitive-architecture"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
@@ -32,33 +32,72 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "langchain==0.3.27",
-    "langchain-community==0.3.27",
-    "langchain-google-genai==2.1.9",
-    "langchain-core==0.3.74",
-    "langgraph==0.6.5",
-    "llama-index==0.13.2",
-    "sentence-transformers==5.1.0",
-    "tiktoken==0.11.0",
-    "chromadb==1.0.17",
-    "duckduckgo-search==8.1.1",
-    "wikipedia-api==0.8.1",
-    "requests==2.32.4",
-    "rich==14.1.0",
-    "termcolor==3.1.0",
-    "python-dotenv==1.1.1",
-    "tenacity==9.1.2",
-    "fastapi==0.116.1",
-    "uvicorn[standard]==0.35.0",
+    # Core AI/ML packages
+    "langchain>=0.3.0,<0.4.0",
+    "langchain-community>=0.3.0,<0.4.0",
+    "langchain-google-genai>=2.0.0,<3.0.0",
+    "langchain-core>=0.3.0,<0.4.0",
+    "langgraph>=0.6.0,<0.7.0",
+    
+    # LLM and embedding packages
+    "llama-index>=0.13.0,<0.14.0",
+    "sentence-transformers>=5.0.0,<6.0.0",
+    "tiktoken>=0.11.0,<0.12.0",
+    
+    # Vector database
+    "chromadb>=1.0.0,<2.0.0",
+    
+    # Search and web tools
+    "duckduckgo-search>=8.0.0,<9.0.0",
+    "wikipedia-api>=0.8.0,<0.9.0",
+    "requests>=2.32.0,<3.0.0",
+    
+    # UI and CLI
+    "rich>=14.0.0,<15.0.0",
+    "termcolor>=3.0.0,<4.0.0",
+    
+    # Configuration and utilities
+    "python-dotenv>=1.0.0,<2.0.0",
+    "tenacity>=9.0.0,<10.0.0",
+    "pydantic>=2.0.0,<3.0.0",
+    "pydantic-settings>=2.0.0,<3.0.0",
+    
+    # Web framework (optional)
+    "fastapi>=0.100.0,<1.0.0",
+    "uvicorn[standard]>=0.20.0,<1.0.0",
+    
+    # Additional utilities
+    "pyyaml>=6.0.0,<7.0.0",
+    "numpy>=1.24.0,<2.0.0",
+    "pandas>=2.0.0,<3.0.0",
+    "click>=8.0.0,<9.0.0",
+    "structlog>=23.0.0,<24.0.0",
+    "typer>=0.9.0,<1.0.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
-    "pytest-cov",
-    "black",
-    "flake8",
-    "mypy",
+    "pytest>=7.0.0,<8.0.0",
+    "pytest-cov>=4.0.0,<5.0.0",
+    "pytest-asyncio>=0.21.0,<1.0.0",
+    "black>=23.0.0,<24.0.0",
+    "isort>=5.12.0,<6.0.0",
+    "flake8>=6.0.0,<7.0.0",
+    "mypy>=1.0.0,<2.0.0",
+    "pre-commit>=3.0.0,<4.0.0",
+    "tox>=4.0.0,<5.0.0",
+]
+docs = [
+    "mkdocs>=1.5.0,<2.0.0",
+    "mkdocs-material>=9.0.0,<10.0.0",
+    "mkdocstrings[python]>=0.20.0,<1.0.0",
+]
+test = [
+    "pytest>=7.0.0,<8.0.0",
+    "pytest-cov>=4.0.0,<5.0.0",
+    "pytest-asyncio>=0.21.0,<1.0.0",
+    "pytest-mock>=3.10.0,<4.0.0",
+    "httpx>=0.24.0,<1.0.0",
 ]
 
 [project.urls]
@@ -68,4 +107,87 @@ Repository = "https://github.com/LevelSUB-zero/rA9-Base"
 "Bug Tracker" = "https://github.com/LevelSUB-zero/rA9-Base/issues"
 
 [project.scripts]
-ra9 = "ra9.main:main"
+ra9 = "ra9.cli:main"
+ra9-server = "ra9.server:main"
+
+[tool.setuptools]
+packages = ["ra9", "ra9.agents", "ra9.core", "ra9.memory", "ra9.router", "ra9.tools"]
+
+[tool.setuptools.package-data]
+ra9 = ["prompts/*.json", "core/*.yaml", "*.yaml"]
+
+[tool.setuptools_scm]
+write_to = "ra9/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["ra9"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "langchain.*",
+    "langchain_community.*",
+    "langchain_google_genai.*",
+    "langchain_core.*",
+    "langgraph.*",
+    "llama_index.*",
+    "sentence_transformers.*",
+    "tiktoken.*",
+    "chromadb.*",
+    "duckduckgo_search.*",
+    "wikipedia.*",
+    "rich.*",
+    "termcolor.*",
+    "tenacity.*",
+    "fastapi.*",
+    "uvicorn.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]

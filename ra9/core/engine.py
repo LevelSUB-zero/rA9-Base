@@ -1,34 +1,52 @@
 import yaml
 import time
-from typing import Dict, Any
-from ra9.core.query_complexity_analyzer import analyze_query_complexity
-from ra9.core.simple_response_handler import handle_simple_query
-from ra9.core.dynamic_reflection_engine import DynamicReflectionEngine
-# from ra9.core.enhanced_cli_ui import EnhancedCLI # Removed
-from ra9.memory.memory_manager import store_memory, check_user_context, store_user_info, load_user_name_on_startup
+import json
+import sys
 import os
-from ra9.router.query_classifier import classify_query, StructuredQuery # Import the classifier
-from ra9.agents.logic_agent import LogicAgent # Assuming these exist or will be created
-from ra9.agents.emotion_agent import EmotionAgent
-from ra9.agents.creative_agent import CreativeAgent
-from ra9.agents.strategy_agent import StrategicAgent
-from ra9.agents.meta_coherence_agent import MetaCoherenceAgent # Using meta_coherence_agent for reflection
-import json # Added for JSONL output
-import sys # Added for stdin
-from datetime import datetime # Added for timestamps
+from pathlib import Path
+from typing import Dict, Any
+from datetime import datetime
+
+from .query_complexity_analyzer import analyze_query_complexity
+from .simple_response_handler import handle_simple_query
+from .dynamic_reflection_engine import DynamicReflectionEngine
+from ..memory.memory_manager import store_memory, check_user_context, store_user_info, load_user_name_on_startup
+from ..router.query_classifier import classify_query, StructuredQuery
+from ..agents.logic_agent import LogicAgent
+from ..agents.emotion_agent import EmotionAgent
+from ..agents.creative_agent import CreativeAgent
+from ..agents.strategy_agent import StrategicAgent
+from ..agents.meta_coherence_agent import MetaCoherenceAgent
+from .config import get_config
+from .logger import get_logger
 
 def load_persona() -> Dict[str, Any]:
     """Load RA9's persona from YAML file."""
-    try:
-        with open("ra9/core/self_persona.yaml", "r") as f:
-            return yaml.safe_load(f)
-    except FileNotFoundError:
-        print("Warning: Persona file not found, using default values")
-        return {
-            "name": "RA9",
-            "core_values": ["Seek understanding", "Reflect deeply", "Evolve with experience"],
-            "identity_traits": ["Curious", "Empathetic", "Strategic"]
-        }
+    config = get_config()
+    logger = get_logger("ra9.core.engine")
+    
+    # Try multiple possible locations for the persona file
+    possible_paths = [
+        Path("ra9/core/self_persona.yaml"),
+        Path(__file__).parent / "self_persona.yaml",
+        Path.cwd() / "ra9" / "core" / "self_persona.yaml"
+    ]
+    
+    for persona_path in possible_paths:
+        if persona_path.exists():
+            try:
+                with open(persona_path, "r", encoding="utf-8") as f:
+                    return yaml.safe_load(f)
+            except Exception as e:
+                logger.warning(f"Error loading persona from {persona_path}: {e}")
+                continue
+    
+    logger.warning("Persona file not found, using default values")
+    return {
+        "name": "RA9",
+        "core_values": ["Seek understanding", "Reflect deeply", "Evolve with experience"],
+        "identity_traits": ["Curious", "Empathetic", "Strategic"]
+    }
 
 def dispatch_query_to_agents(structured_query: StructuredQuery, ra9_persona: Dict[str, Any]) -> Dict[str, Any]: # Removed cli parameter
     """Routes the structured query to the appropriate cognitive agent(s)."""
