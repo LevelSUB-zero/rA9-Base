@@ -14,6 +14,40 @@ from pathlib import Path
 package_root = Path(__file__).parent.parent
 sys.path.insert(0, str(package_root))
 
+def check_dependencies():
+    """Check if required dependencies are installed."""
+    missing_deps = []
+    
+    try:
+        import pydantic
+    except ImportError:
+        missing_deps.append("pydantic")
+    
+    try:
+        import pydantic_settings
+    except ImportError:
+        missing_deps.append("pydantic-settings")
+    
+    try:
+        import typer
+    except ImportError:
+        missing_deps.append("typer")
+    
+    try:
+        import structlog
+    except ImportError:
+        missing_deps.append("structlog")
+    
+    if missing_deps:
+        print(json.dumps({
+            "kind": "error",
+            "message": f"Missing required dependencies: {', '.join(missing_deps)}. Please run: pip install {' '.join(missing_deps)}"
+        }), flush=True)
+        sys.exit(1)
+
+# Check dependencies before importing RA9 modules
+check_dependencies()
+
 from ra9.core.config import get_config
 from ra9.core.logger import setup_logging, get_logger
 from ra9.core.cli_workflow_engine import run_cli_workflow
