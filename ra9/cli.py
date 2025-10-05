@@ -19,6 +19,7 @@ from .core.config import get_config, Config
 from .core.logger import setup_logging, get_logger
 from .core.engine import run_ra9_cognitive_engine
 from .core.cli_workflow_engine import run_cli_workflow
+from .memory.memory_manager import get_memory_manager, retrieve_memory_snippets
 
 
 console = Console()
@@ -230,6 +231,126 @@ def server(ctx, port: int, host: str):
     except Exception as e:
         console.print(f"[red]Error starting server: {e}[/red]")
         sys.exit(1)
+
+
+@cli.group()
+@click.pass_context
+def memory(ctx):
+    """Memory management commands."""
+    pass
+
+
+@memory.command("search")
+@click.option("--query", "query", required=True)
+@click.option("--k", type=int, default=6)
+def memory_search(query: str, k: int):
+    hits = retrieve_memory_snippets(query, k=k)
+    console.print(Panel("\n".join(hits) or "No hits", title="Memory Search"))
+
+
+@memory.command("write")
+@click.option("--text", required=True)
+@click.option("--type", "mtype", default="episodic")
+@click.option("--tags", multiple=True)
+def memory_write(text: str, mtype: str, tags: tuple[str, ...]):
+    mm = get_memory_manager()
+    mem_id = mm.write_memory(mtype, text, tags=list(tags), importance=0.6, consent=True)
+    console.print(f"[green]Wrote memory:[/green] {mem_id}")
+
+
+@memory.command("delete")
+@click.option("--id", "mem_id", required=True)
+def memory_delete(mem_id: str):
+    mm = get_memory_manager()
+    c = mm.conn.cursor()
+    c.execute("DELETE FROM embeddings WHERE memory_id=?", (mem_id,))
+    c.execute("DELETE FROM memory_items WHERE id=?", (mem_id,))
+    mm.conn.commit()
+    console.print(f"[yellow]Deleted:[/yellow] {mem_id}")
+
+
+@memory.command("rebuild-index")
+def memory_rebuild_index():
+    mm = get_memory_manager()
+    n = mm.rebuild_index()
+    console.print(f"[green]Rebuilt FAISS with {n} vectors")
+
+
+@memory.command("consolidate")
+def memory_consolidate():
+    from .memory.jobs import consolidate_once
+    n = consolidate_once()
+    console.print(f"[green]Created {n} semantic facts")
+
+
+@memory.command("prune")
+def memory_prune():
+    from .memory.jobs import prune_once
+    n = prune_once()
+    console.print(f"[yellow]Pruned {n} episodic items")
+
+
+@memory.group("wm")
+def memory_wm():
+    """Working memory subcommands."""
+    pass
+
+
+@memory_wm.command("get")
+@click.option("--user", "user_id", required=True)
+@click.option("--cap", type=int, default=7)
+def memory_wm_get(user_id: str, cap: int):
+    mm = get_memory_manager()
+    console.print("\n".join(mm.wm_get(user_id, cap=cap)) or "<empty>")
+
+
+@memory_wm.command("add")
+@click.option("--user", "user_id", required=True)
+@click.option("--entry", "entries", multiple=True)
+@click.option("--cap", type=int, default=7)
+def memory_wm_add(user_id: str, entries: tuple[str, ...], cap: int):
+    mm = get_memory_manager()
+    mm.wm_add_entries(user_id, list(entries), cap=cap)
+    console.print("[green]OK")
+
+
+@memory_wm.command("clear")
+@click.option("--user", "user_id", required=True)
+def memory_wm_clear(user_id: str):
+    mm = get_memory_manager()
+    n = mm.wm_clear(user_id)
+    console.print(f"[yellow]Cleared {n} entries")
+
+
+@memory.command("export")
+@click.option("--session-id", "session_id", default=None)
+def memory_export(session_id: Optional[str]):
+    mm = get_memory_manager()
+    if session_id:
+        events = mm.get_session_events(session_id)
+    else:
+        events = mm.get_tail(k=100)
+    print(json.dumps(events, indent=2))
+
+
+@memory.command("stats")
+def memory_stats():
+    # Basic counters from audit_log
+    mm = get_memory_manager()
+    c = mm.conn.cursor()
+    totals = {
+        "writes": c.execute("SELECT COUNT(*) FROM audit_log WHERE action='write_memory'").fetchone()[0],
+        "semantic": c.execute("SELECT COUNT(*) FROM semantic_facts").fetchone()[0],
+        "events": c.execute("SELECT COUNT(*) FROM episodic_events").fetchone()[0],
+    }
+    console.print(Panel(json.dumps(totals, indent=2), title="Memory Stats"))
+
+
+@memory.command("maintain")
+def memory_maintain():
+    from .memory.jobs import scheduled_maintenance
+    summary = scheduled_maintenance()
+    console.print(Panel(json.dumps(summary, indent=2), title="Maintenance Summary"))
 
 
 def main():

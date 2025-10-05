@@ -42,10 +42,12 @@ dependencies = [
     # LLM and embedding packages
     "llama-index>=0.13.0,<0.14.0",
     "sentence-transformers>=5.0.0,<6.0.0",
+    "transformers>=4.43.0,<5.0.0",
     "tiktoken>=0.11.0,<0.12.0",
     
     # Vector database
     "chromadb>=1.0.0,<2.0.0",
+    "faiss-cpu>=1.7.4,<2.0.0",
     
     # Search and web tools
     "duckduckgo-search>=8.0.0,<9.0.0",
@@ -73,6 +75,8 @@ dependencies = [
     "click>=8.0.0,<9.0.0",
     "structlog>=23.0.0,<24.0.0",
     "typer>=0.9.0,<1.0.0",
+    "cryptography>=42.0.0,<43.0.0",
+    "hdbscan>=0.8.36,<0.9.0",
 ]
 
 [project.optional-dependencies]
@@ -111,7 +115,7 @@ ra9 = "ra9.cli:main"
 ra9-server = "ra9.server:main"
 
 [tool.setuptools]
-packages = ["ra9", "ra9.agents", "ra9.core", "ra9.memory", "ra9.router", "ra9.tools"]
+packages = ["ra9", "ra9.agents", "ra9.core", "ra9.memory", "ra9.router", "ra9.tools", "ra9.council"]
 
 [tool.setuptools.package-data]
 ra9 = ["prompts/*.json", "core/*.yaml", "*.yaml"]

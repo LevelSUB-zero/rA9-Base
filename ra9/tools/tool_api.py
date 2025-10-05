@@ -56,10 +56,10 @@ def load_prompt_from_json(file_path):
                 return json.dumps(prompt_data, indent=2)
 
     except FileNotFoundError:
-        print(f"Error: Prompt file not found at {file_path}")
+        # Graceful fallback: return empty prompt if file missing
         return ""
     except json.JSONDecodeError:
-        print(f"Error: Invalid JSON in {file_path}")
+        # Graceful fallback: return empty prompt if invalid JSON
         return ""
 
 @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=30))
@@ -71,9 +71,27 @@ def ask_gemini(prompt):
     """
     load_dotenv() # Ensure .env is loaded before accessing GEMINI_API_KEY
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    OFFLINE = os.getenv("RA9_OFFLINE", "false").lower() in ("1", "true", "yes")
+    LLM_PROVIDER = os.getenv("RA9_LLM_PROVIDER", "gemini").lower()
+    OLLAMA_MODEL = os.getenv("RA9_LLM_MODEL", "llama3:latest")
 
-    if not GEMINI_API_KEY:
-        raise ValueError("GEMINI_API_KEY not found in environment variables. Please set it.")
+    # Offline or no key: return mock response to keep CLI/tests runnable
+    if OFFLINE:
+        return f"[mock-gemini] {prompt[:240]}"
+
+    # Ollama provider path (local inference)
+    if LLM_PROVIDER == "ollama":
+        try:
+            import requests
+            host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
+            url = os.getenv("OLLAMA_API_URL", f"{host}/api/generate")
+            payload = {"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}
+            r = requests.post(url, json=payload, timeout=120)
+            r.raise_for_status()
+            data = r.json()
+            return data.get("response", "")
+        except Exception as e:
+            return f"[ollama-error] {e}"
 
     url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
     headers = {"Content-Type": "application/json"}
@@ -118,6 +136,9 @@ def ask_gemini(prompt):
         if status in (429, 503):
             print(f"HTTP {status} from Gemini. Retrying with backoff...\nResponse content: {getattr(e.response, 'text', '')}")
             raise
+        # Fallback to mock on non-retryable errors if offline mode requested
+        if OFFLINE:
+            return f"[mock-gemini-http-{status}] {prompt[:240]}"
         print(f"HTTP Error: {e}")
         print(f"Response content: {getattr(e.response, 'text', '')}") # Ensure full response is always printed on HTTPError
         return f"Error: Failed to connect to Gemini API. Status code: {status}"

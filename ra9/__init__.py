@@ -24,4 +24,5 @@ __all__ = [
     "__author__",
     "__email__",
     "__description__",
+    "council",
 ]

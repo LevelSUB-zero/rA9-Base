@@ -13,7 +13,7 @@ from .enhanced_cli_ui import get_cli
 from .executor import execute_ra9_multi_agent
 from .engine import load_persona
 from ..router.query_classifier import classify_query, StructuredQuery
-from ..memory.memory_manager import store_episodic, store_semantic, store_reflective
+from ..memory.memory_manager import store_memory, store_semantic, store_reflective
 
 class CLIWorkflowEngine:
     """Enhanced workflow engine with CLI visualization"""
@@ -146,7 +146,7 @@ class CLIWorkflowEngine:
                 
                 # Write to episodic memory
                 self.cli.show_memory_write("episodic", final_answer)
-                store_episodic(text, final_answer, reflection)
+                store_memory("episodic", text, final_answer, reflection, allow_memory_write=True)
                 
                 # Write to semantic if substantial
                 if len(final_answer) > 300:

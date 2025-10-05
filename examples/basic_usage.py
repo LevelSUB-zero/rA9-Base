@@ -1,3 +1,25 @@
+from ra9.council.pipeline import CouncilPipeline
+from ra9.council.schemas import QueryContext
+
+
+def run_council_demo():
+    pipe = CouncilPipeline()
+    ctx = QueryContext(
+        queryId="q-demo",
+        userId="user-42",
+        text="Explain the mechanism of photosynthesis for an 8-year-old",
+        mode="concise",
+        loopDepth=1,
+        allowMemoryWrite=False,
+        userPrefs={"tone": "friendly", "clarity": "high"},
+    )
+    res = pipe.run(ctx)
+    print("Decision:", res.decision)
+    print("Final Text:\n", res.finalText)
+
+
+if __name__ == "__main__":
+    run_council_demo()
 #!/usr/bin/env python3
 """
 Basic usage example for RA9.

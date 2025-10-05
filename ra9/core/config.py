@@ -141,3 +141,28 @@ def set_config(config: Config) -> None:
     """Set the global configuration instance."""
     global _config
     _config = config
+
+
+# -------------------------
+# Backwards-compat constants used by critique system
+# -------------------------
+
+# Maximum number of issues allowed for an output to be considered passable in diagnostic mode.
+# Exposed as a module-level constant for legacy imports.
+CRITIC_MAX_ALLOWED_ISSUES: Optional[int] = None
+try:
+    # Allow override from env; empty means None
+    _v = os.environ.get("RA9_CRITIC_MAX_ALLOWED_ISSUES", "").strip()
+    if _v != "":
+        CRITIC_MAX_ALLOWED_ISSUES = int(_v)
+except Exception:
+    CRITIC_MAX_ALLOWED_ISSUES = None
+
+# Meta-coherence acceptance threshold used by meta_coherence_engine
+COHERENCE_THRESHOLD: float = 0.75
+try:
+    _ct = os.environ.get("RA9_COHERENCE_THRESHOLD", "").strip()
+    if _ct != "":
+        COHERENCE_THRESHOLD = float(_ct)
+except Exception:
+    COHERENCE_THRESHOLD = 0.75

@@ -344,6 +344,16 @@ class EnhancedCLI:
         self.show_performance_metrics()
         print(f"\n{Colors.DIM}Thank you for using RA9 Enhanced CLI{Colors.RESET}\n")
 
+    # --- Realtime Events ---
+    def emit_event(self, event: str, data: Dict[str, Any]) -> None:
+        """Emit a realtime event line (used by council pipeline)."""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        try:
+            payload = json.dumps(data, ensure_ascii=False)
+        except Exception:
+            payload = str(data)
+        print(f"{Colors.DIM}[{timestamp}]{Colors.RESET} {Colors.CYAN}{event}{Colors.RESET} {payload}")
+
 # Global CLI instance
 cli = EnhancedCLI()
 
